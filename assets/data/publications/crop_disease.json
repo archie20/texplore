@@ -1,0 +1,108 @@
+{
+  "schemaVersion": "1.0.0",
+  "publications": [
+    {
+      "id": "pub-ye-2026",
+      "title": "Description-Guided CLIP (Ye et al., 2026)",
+      "authors": [
+        "Ye et al."
+      ],
+      "year": 2026,
+      "venue": null,
+      "volume": null,
+      "issue": null,
+      "pages": null,
+      "doi": null,
+      "url": null,
+      "abstract": null,
+      "publicationType": "other",
+      "datasetOrArtifact": null,
+      "verificationStatus": "unverified",
+      "verificationNotes": "Exact title, venue, datasets/versions, prompt and shot setup, split design, metric calculation, and calibration procedure must be verified from the paper. Do not quote these numbers as established facts until checked.",
+      "relevanceNote": "Project notes report Description-Guided CLIP results: 16-shot accuracy of 93.16% on PlantVillage, 79.30% on Cassava, 96.56% on Pear, and 56.96% on 21-class PlantDoc cross-domain evaluation. The notes distinguish local evidence calibration from conventional confidence calibration.",
+      "accessDate": null
+    },
+    {
+      "id": "pub-xiong-2026",
+      "title": "BLAP (Xiong et al., 2026)",
+      "authors": [
+        "Xiong et al."
+      ],
+      "year": 2026,
+      "venue": null,
+      "volume": null,
+      "issue": null,
+      "pages": null,
+      "doi": null,
+      "url": null,
+      "abstract": null,
+      "publicationType": "other",
+      "datasetOrArtifact": null,
+      "verificationStatus": "unverified",
+      "verificationNotes": "Full title, dataset composition, metrics, split design, field-test protocol, and exact meaning of the reported results are unverified. A 36-image test cannot by itself establish broad field generalisation.",
+      "relevanceNote": "Project notes describe BLAP as involving 990 images, 11 crops, 33 categories, reported 92.78% accuracy, and a 360-image wheat-field evaluation with 36/36 test images reportedly correct. The notes also associate the work with OOD, leave-one-crop-out, severity, and recommendation validation.",
+      "accessDate": null
+    },
+    {
+      "id": "pub-kang-2026",
+      "title": "Leakage or session splits (Kang, 2026)",
+      "authors": [
+        "Kang"
+      ],
+      "year": 2026,
+      "venue": null,
+      "volume": null,
+      "issue": null,
+      "pages": null,
+      "doi": null,
+      "url": null,
+      "abstract": null,
+      "publicationType": "other",
+      "datasetOrArtifact": null,
+      "verificationStatus": "unverified",
+      "verificationNotes": "The exact paper, dataset, sensor-reading definition, overlap method, and result are unverified. Confirm that the study concerns the relevant crop-disease dataset.",
+      "relevanceNote": "Project notes report a result that 91.9% of CDD test images share sensor readings with training images, motivating session/farm-disjoint evaluation.",
+      "accessDate": null
+    },
+    {
+      "id": "pub-mooraj-2026",
+      "title": "AgriPath-LF16 (Mooraj et al., 2026)",
+      "authors": [
+        "Mooraj et al."
+      ],
+      "year": 2026,
+      "venue": null,
+      "volume": null,
+      "issue": null,
+      "pages": null,
+      "doi": null,
+      "url": null,
+      "abstract": null,
+      "publicationType": "other",
+      "datasetOrArtifact": null,
+      "verificationStatus": "unverified",
+      "verificationNotes": "Dataset release, version, image count, class distribution, field provenance, licensing, and split metadata are unverified.",
+      "relevanceNote": "AgriPath-LF16 was discussed as a possible field-oriented dataset lead; project notes mention 111,000 images, 16 crops, and 41 diseases.",
+      "accessDate": null
+    },
+    {
+      "id": "pub-ccmt",
+      "title": "CCMT crop-disease image dataset",
+      "authors": [],
+      "year": null,
+      "venue": null,
+      "volume": null,
+      "issue": null,
+      "pages": null,
+      "doi": null,
+      "url": null,
+      "abstract": null,
+      "publicationType": "dataset",
+      "datasetOrArtifact": null,
+      "verificationStatus": "unverified",
+      "verificationNotes": "All counts, release/version, crop/category distribution, licences, duplicate/augmentation lineage, and split overlap must be checked against the dataset documentation. Do not treat augmented images as independent original samples.",
+      "relevanceNote": "Candidate dataset for testing leakage-aware splits and reliability under field/domain shift. Project notes report 24,881 original images plus 102,976 augmented images across four crops and 22 categories.",
+      "accessDate": null
+    }
+  ]
+}
