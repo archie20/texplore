@@ -140,12 +140,26 @@ class ParsedCandidate {
   final String? source;
 }
 
+/// A publication JSON file after decoding, before its records are accepted.
+class ParsedPublicationFile {
+  const ParsedPublicationFile({
+    required this.source,
+    required this.schemaVersion,
+    required this.publications,
+  });
+
+  final String source;
+  final String? schemaVersion;
+  final List<Publication> publications;
+}
+
 class ParsedCatalogue {
   const ParsedCatalogue({
     required this.schemaVersion,
     required this.title,
     required this.candidates,
     required this.publications,
+    this.publicationFiles = const [],
     this.lastReviewed,
     this.parseIssues = const [],
   });
@@ -155,5 +169,6 @@ class ParsedCatalogue {
   final String? lastReviewed;
   final List<ParsedCandidate> candidates;
   final List<Publication> publications;
+  final List<ParsedPublicationFile> publicationFiles;
   final List<ValidationIssue> parseIssues;
 }

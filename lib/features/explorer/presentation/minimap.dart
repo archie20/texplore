@@ -169,7 +169,7 @@ class _MinimapPainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
     final edges = motion?.follow(layout.edges) ?? layout.edges;
     for (final edge in edges) {
-      if (edge.crossLink) continue;
+      if (edge.crossLink || edge.navigation) continue;
       canvas.drawLine(
         map.plot(edge.start.x, edge.start.y),
         map.plot(edge.end.x, edge.end.y),

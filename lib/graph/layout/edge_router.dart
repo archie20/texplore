@@ -21,6 +21,23 @@ class EdgeRouter {
     );
   }
 
+  /// Navigation cue from a thesis problem to a stage hub.
+  RoutedEdge navigation(LayoutNode source, LayoutNode target) {
+    final edge = hierarchy(source, target);
+    return RoutedEdge(
+      id: 'nav:${source.id}->${target.id}',
+      sourceId: source.id,
+      targetId: target.id,
+      start: edge.start,
+      control1: edge.start,
+      control2: edge.end,
+      end: edge.end,
+      dashed: true,
+      crossLink: false,
+      navigation: true,
+    );
+  }
+
   RoutedEdge cross(String id, LayoutNode source, LayoutNode target) {
     final edge = hierarchy(source, target);
     return RoutedEdge(

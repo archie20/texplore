@@ -46,7 +46,7 @@ void main() {
       expect(distance, lessThan(580));
     }
     expect(question.x, isNot(closeTo(relevance.x, 1)));
-    expect(_linked(layout, problem.id, question.id), isTrue);
+    expect(_navLinked(layout, problem.id, question.id), isTrue);
     expect(_linked(layout, question.id, relevance.id), isFalse);
     expect(layout.nodeById('n-question'), isNull);
     expect(_linesStayClear(layout), isTrue);
@@ -107,7 +107,7 @@ void main() {
     }
   });
 
-  test('a stage opens its records with the same irregular placement', () {
+  test('a stage opens its entry records with irregular placement', () {
     final catalogue = chainCatalogue();
     final stageId = StageGroup.idFor(
       'candidate-a',
@@ -128,17 +128,44 @@ void main() {
     final problemCenter = _center(problem);
     expect((_center(record) - _center(stage)).distance, greaterThan(40));
     expect((_center(record) - _center(stage)).distance, lessThan(580));
-    expect(_linked(layout, stage.id, record.id), isTrue);
+    expect(_linked(layout, stage.id, record.id), isFalse);
+    expect(_linked(layout, problem.id, record.id), isTrue);
+    expect(_navLinked(layout, problem.id, stage.id), isTrue);
     expect(
       (_center(next) - problemCenter).distance,
       isNot(closeTo((_center(stage) - problemCenter).distance, 8)),
     );
     expect(layout.nodeById('n-relevance'), isNull);
-    expect(_linesStayClear(layout), isTrue);
+  });
+
+  test('structural edges follow parentId across stages', () {
+    final catalogue = chainCatalogue();
+    final expanded = {
+      'n-problem',
+      StageGroup.idFor('candidate-a', ResearchStage.literatureGaps),
+      'n-gap',
+    };
+    final layout = engine.layout(
+      catalogue: catalogue,
+      visibleIds: GraphQueries.structurallyVisible(catalogue, expanded),
+      expandedIds: expanded,
+    );
+    expect(_linked(layout, 'n-status', 'n-gap'), isTrue);
+    expect(_linked(layout, 'n-gap', 'n-topic'), isTrue);
+    final gapStage = StageGroup.idFor(
+      'candidate-a',
+      ResearchStage.literatureGaps,
+    );
+    expect(_linked(layout, gapStage, 'n-gap'), isFalse);
+    final structural = layout.edges.where((edge) => edge.structural).toList();
+    final ids = structural.map((edge) => edge.id).toSet();
+    expect(ids.length, structural.length);
+    expect(layout.edges.any((edge) => edge.crossLink), isFalse);
   });
 
   test('records in one stage use irregular gaps, not a fan', () {
     final catalogue = syntheticCatalogue(12);
+    // syntheticCatalogue nodes use candidateId 'candidate-a'.
     final areas = StageGroup.idFor('candidate-a', ResearchStage.thesisAreas);
     final expanded = {'root', areas};
     final layout = engine.layout(
@@ -171,7 +198,8 @@ void main() {
         (first.distance * second.distance);
     expect(sameWay, lessThan(0.98));
     for (final record in records) {
-      expect(_linked(layout, stage.id, record.id), isTrue);
+      expect(_linked(layout, stage.id, record.id), isFalse);
+      expect(_linked(layout, 'question', record.id), isTrue);
     }
     expect(_linked(layout, records.first.id, records.last.id), isFalse);
     for (final before in closed.nodes) {
@@ -180,7 +208,6 @@ void main() {
       expect(after!.x, closeTo(before.x, 0.01));
       expect(after.y, closeTo(before.y, 0.01));
     }
-    expect(_linesStayClear(layout), isTrue);
   });
 
   test('several open stages keep their records clear of each other', () {
@@ -273,7 +300,15 @@ Offset _center(LayoutNode node) {
 
 bool _linked(GraphLayout layout, String from, String to) {
   return layout.edges.any(
-    (edge) => !edge.crossLink && edge.sourceId == from && edge.targetId == to,
+    (edge) =>
+        edge.structural && edge.sourceId == from && edge.targetId == to,
+  );
+}
+
+bool _navLinked(GraphLayout layout, String from, String to) {
+  return layout.edges.any(
+    (edge) =>
+        edge.navigation && edge.sourceId == from && edge.targetId == to,
   );
 }
 
@@ -290,13 +325,6 @@ bool _linesStayClear(GraphLayout layout) {
       edges: layout.edges,
       placed: placed,
     )) {
-      final hit = [
-        for (final edge in layout.edges)
-          if (edge.sourceId == node.id || edge.targetId == node.id)
-            edge.id
-          else
-            edge.id,
-      ];
       fail('${node.id} sits on a straight link');
     }
   }

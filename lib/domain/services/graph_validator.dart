@@ -6,6 +6,7 @@ import '../models/candidate.dart';
 import '../models/evidence_link.dart';
 import '../models/publication.dart';
 import '../models/research_node.dart';
+import 'schema_version.dart';
 
 class ValidationReport {
   const ValidationReport({
@@ -28,18 +29,17 @@ class GraphValidator {
 
   ValidationReport validate(ParsedCatalogue parsed) {
     final issues = <ValidationIssue>[...parsed.parseIssues];
-    if (parsed.schemaVersion != Catalogue.supportedSchemaVersion) {
+    final schemaFailure = _schemaFailures(parsed);
+    if (schemaFailure != null) {
       return ValidationReport(
         fatal: true,
-        fatalMessage:
-            'This catalogue uses schema "${parsed.schemaVersion ?? '(missing)'}", '
-            'which this version of the app cannot read. Expected ${Catalogue.supportedSchemaVersion}.',
+        fatalMessage: schemaFailure.message,
         issues: [
           ValidationIssue(
             severity: IssueSeverity.error,
             code: 'schema_version',
-            message:
-                'Unsupported schema version "${parsed.schemaVersion ?? '(missing)'}".',
+            message: schemaFailure.message,
+            candidateId: schemaFailure.candidateId,
           ),
           ...issues,
         ],
@@ -72,20 +72,6 @@ class GraphValidator {
     final nodes = <String, ResearchNode>{};
     for (final parsedCandidate in parsed.candidates) {
       final candidate = parsedCandidate.candidate;
-      if (parsedCandidate.schemaVersion != null &&
-          parsedCandidate.schemaVersion != Catalogue.supportedSchemaVersion) {
-        invalid.add(candidate.id);
-        issues.add(
-          ValidationIssue(
-            severity: IssueSeverity.error,
-            code: 'schema_version',
-            message:
-                'Candidate file schema "${parsedCandidate.schemaVersion}" is not supported.',
-            candidateId: candidate.id,
-          ),
-        );
-        continue;
-      }
       for (final node in candidate.nodes) {
         if (nodes.containsKey(node.id)) {
           invalid.add(candidate.id);
@@ -121,11 +107,6 @@ class GraphValidator {
         );
         continue;
       }
-      if (invalid.contains(candidate.id) &&
-          parsedCandidate.schemaVersion != Catalogue.supportedSchemaVersion &&
-          parsedCandidate.schemaVersion != null) {
-        continue;
-      }
       _validateCandidate(
         candidate: candidate,
         nodes: nodes,
@@ -158,6 +139,39 @@ class GraphValidator {
       issues: issues,
       invalidCandidateIds: invalid,
     );
+  }
+
+  _SchemaFailure? _schemaFailures(ParsedCatalogue parsed) {
+    final manifestError = SchemaVersion.mismatchMessage(
+      parsed.schemaVersion,
+      path: 'assets/data/manifest.json',
+    );
+    if (manifestError != null) {
+      return _SchemaFailure(manifestError);
+    }
+
+    for (final file in parsed.publicationFiles) {
+      final error = SchemaVersion.mismatchMessage(
+        file.schemaVersion,
+        path: file.source,
+      );
+      if (error != null) return _SchemaFailure(error);
+    }
+
+    // When publicationFiles is empty (unit tests that pass publications
+    // directly), skip per-file checks and rely on candidate/manifest only.
+    for (final parsedCandidate in parsed.candidates) {
+      final path = parsedCandidate.source ??
+          'candidate:${parsedCandidate.candidate.id}';
+      final error = SchemaVersion.mismatchMessage(
+        parsedCandidate.schemaVersion,
+        path: path,
+      );
+      if (error != null) {
+        return _SchemaFailure(error, candidateId: parsedCandidate.candidate.id);
+      }
+    }
+    return null;
   }
 
   Catalogue assemble(ParsedCatalogue parsed, ValidationReport report) {
@@ -500,4 +514,11 @@ class GraphValidator {
     }
     return false;
   }
+}
+
+class _SchemaFailure {
+  const _SchemaFailure(this.message, {this.candidateId});
+
+  final String message;
+  final String? candidateId;
 }

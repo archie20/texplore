@@ -44,15 +44,15 @@ class EdgePainter extends CustomPainter {
     final routeSpans = <_RouteSpan>[];
     for (final edge in edges) {
       final onPath =
-          !edge.crossLink &&
+          edge.structural &&
           highlighted.contains(edge.sourceId) &&
           highlighted.contains(edge.targetId);
       final paint = Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = onPath ? 1.8 : 1.15
+        ..strokeWidth = onPath ? 1.8 : (edge.navigation ? 1.0 : 1.15)
         ..color = onPath
             ? accentColor
-            : (edge.crossLink ? mutedColor : edgeColor)
+            : (edge.crossLink || edge.navigation ? mutedColor : edgeColor)
         ..strokeCap = StrokeCap.round;
       final start =
           Offset(edge.start.x, edge.start.y) +
@@ -63,12 +63,19 @@ class EdgePainter extends CustomPainter {
           offset +
           _drift(edge.targetId, seconds);
       if (edge.dashed) {
-        _dashLine(canvas, start, end, paint, dash: 7, gap: 5);
+        _dashLine(
+          canvas,
+          start,
+          end,
+          paint,
+          dash: edge.navigation ? 4 : 7,
+          gap: edge.navigation ? 6 : 5,
+        );
       } else {
         canvas.drawLine(start, end, paint);
       }
       final onRoute =
-          !edge.crossLink &&
+          edge.structural &&
           route.contains(edge.sourceId) &&
           route.contains(edge.targetId);
       if (onRoute) {

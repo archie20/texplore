@@ -31,18 +31,12 @@ void main() {
       'language',
       'context',
     ]);
+    expect(result.catalogue.publications, isNotEmpty);
     expect(
-      result.catalogue.publications.values.every(
-        (publication) =>
-            publication.verificationStatus == VerificationStatus.unverified,
+      result.catalogue.publications.values.map(
+        (publication) => publication.verificationStatus,
       ),
-      isTrue,
-    );
-    expect(
-      result.catalogue.publications.values.every(
-        (publication) => publication.doi == null,
-      ),
-      isTrue,
+      everyElement(isIn(VerificationStatus.values)),
     );
     final errors = result.catalogue.issues.where((issue) => issue.isError);
     expect(

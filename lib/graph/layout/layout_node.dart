@@ -151,6 +151,7 @@ class RoutedEdge extends Equatable {
     required this.end,
     required this.dashed,
     required this.crossLink,
+    this.navigation = false,
     this.points = const [],
   });
 
@@ -164,11 +165,16 @@ class RoutedEdge extends Equatable {
   final bool dashed;
   final bool crossLink;
 
+  /// Root-to-stage hub link. Not a content parent-child edge.
+  final bool navigation;
+
   /// The drawn polyline, including both ends. Empty means the straight
   /// segment from [start] to [end].
   final List<GraphPoint> points;
 
   List<GraphPoint> get route => points.length >= 2 ? points : [start, end];
+
+  bool get structural => !crossLink && !navigation;
 
   @override
   List<Object?> get props => [
@@ -181,6 +187,7 @@ class RoutedEdge extends Equatable {
     end,
     dashed,
     crossLink,
+    navigation,
     points,
   ];
 }

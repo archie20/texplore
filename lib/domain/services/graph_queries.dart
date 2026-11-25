@@ -90,6 +90,26 @@ class GraphQueries {
     return nodes;
   }
 
+  /// Records in [stage] whose parent is absent or belongs to a different stage.
+  static List<ResearchNode> stageEntries(
+    Catalogue catalogue,
+    String candidateId,
+    ResearchStage stage,
+  ) {
+    final entries = <ResearchNode>[];
+    for (final node in nodesInStage(catalogue, candidateId, stage)) {
+      if (node.parentId == null) {
+        entries.add(node);
+        continue;
+      }
+      final parent = catalogue.nodes[node.parentId!];
+      if (parent == null || parent.stage != stage) {
+        entries.add(node);
+      }
+    }
+    return entries;
+  }
+
   /// The circle a keyboard user moves to when leaving [id].
   static String? canvasParentId(Catalogue catalogue, String id) {
     final group = StageGroup.parse(id);
@@ -97,11 +117,15 @@ class GraphQueries {
       return catalogue.candidateById(group.candidateId)?.rootNodeId;
     }
     final node = catalogue.nodes[id];
-    if (node == null || node.stage == ResearchStage.thesisProblem) return null;
+    if (node == null) return null;
+    if (node.parentId != null && catalogue.nodes.containsKey(node.parentId)) {
+      return node.parentId;
+    }
+    if (node.stage == ResearchStage.thesisProblem) return null;
     return StageGroup.idFor(node.candidateId, node.stage);
   }
 
-  /// Thesis problem, stage group, and record on the way to [nodeId].
+  /// Actual ancestor path from the candidate root to [nodeId].
   static Set<String> routeIds(Catalogue catalogue, String nodeId) {
     final group = StageGroup.parse(nodeId);
     if (group != null) {
@@ -110,16 +134,10 @@ class GraphQueries {
     }
     final node = catalogue.nodes[nodeId];
     if (node == null) return const {};
-    if (node.stage == ResearchStage.thesisProblem) return {node.id};
-    final root = catalogue.candidateById(node.candidateId)?.rootNodeId;
-    return {
-      ?root,
-      StageGroup.idFor(node.candidateId, node.stage),
-      node.id,
-    };
+    return {for (final step in pathToRoot(catalogue, nodeId)) step.id};
   }
 
-  /// [routeIds] plus every circle at the same level as [nodeId].
+  /// [routeIds] plus siblings at the same structural level as [nodeId].
   static Set<String> focusIds(Catalogue catalogue, String nodeId) {
     final route = routeIds(catalogue, nodeId);
     final group = StageGroup.parse(nodeId);
@@ -131,27 +149,20 @@ class GraphQueries {
       };
     }
     final node = catalogue.nodes[nodeId];
-    if (node == null || node.stage == ResearchStage.thesisProblem) {
-      return route;
-    }
+    if (node == null) return route;
+    if (node.stage == ResearchStage.thesisProblem) return route;
     return {
       ...route,
-      for (final sibling in nodesInStage(
-        catalogue,
-        node.candidateId,
-        node.stage,
-      ))
-        sibling.id,
+      for (final sibling in siblings(catalogue, node)) sibling.id,
     };
   }
 
   /// Nodes revealed by expanding [expandedIds].
   ///
-  /// With every thesis problem collapsed, each problem circle is included.
-  /// Opening a problem shows one circle per research stage, grouped under
-  /// that problem. Opening a stage shows the records in that stage. Once any
-  /// problem is open, the other problem circles are omitted so they are not
-  /// laid out or drawn.
+  /// Roots stay collapsed until opened. Opening a problem shows stage hubs.
+  /// Opening a stage shows only stage-entry records. Expanding a research
+  /// record reveals its actual children. Ancestors of any visible record are
+  /// auto-revealed without expanding sibling branches.
   static Set<String> structurallyVisible(
     Catalogue catalogue,
     Set<String> expandedIds,
@@ -173,11 +184,65 @@ class GraphQueries {
         final groupId = StageGroup.idFor(root.candidateId, stage);
         visible.add(groupId);
         if (!expandedIds.contains(groupId)) continue;
-        for (final node in nodesInStage(catalogue, root.candidateId, stage)) {
-          visible.add(node.id);
+        for (final entry in stageEntries(catalogue, root.candidateId, stage)) {
+          visible.add(entry.id);
         }
       }
     }
+
+    // Thesis-problem expansion only unlocks stage hubs. Record expansion
+    // reveals actual children, including cross-stage ones.
+    var grew = true;
+    while (grew) {
+      grew = false;
+      final snapshot = visible.toList();
+      for (final id in snapshot) {
+        if (!expandedIds.contains(id)) continue;
+        final node = catalogue.nodes[id];
+        if (node == null) continue;
+        if (node.stage == ResearchStage.thesisProblem) continue;
+        for (final child in children(catalogue, node)) {
+          if (visible.add(child.id)) grew = true;
+        }
+      }
+    }
+
+    final researchIds = [
+      for (final id in visible.toList())
+        if (catalogue.nodes.containsKey(id)) id,
+    ];
+    for (final id in researchIds) {
+      for (final ancestor in ancestorIds(catalogue, id)) {
+        visible.add(ancestor);
+      }
+    }
     return visible;
+  }
+
+  /// Expansion ids that make [nodeId] reachable without opening off-path siblings.
+  ///
+  /// Opens the candidate root and the target's stage hub. Same-stage ancestors
+  /// are expanded so nested records under a stage entry become reachable.
+  /// Cross-stage ancestors are left collapsed; [structurallyVisible] auto-reveals
+  /// them without expanding their other children.
+  static Set<String> expansionForPath(Catalogue catalogue, String nodeId) {
+    final node = catalogue.nodes[nodeId];
+    if (node == null) return const {};
+    final expanded = <String>{};
+    final root = catalogue.candidateById(node.candidateId)?.rootNodeId;
+    if (root != null) expanded.add(root);
+    if (node.stage != ResearchStage.thesisProblem) {
+      expanded.add(StageGroup.idFor(node.candidateId, node.stage));
+    }
+    var current = node;
+    while (current.parentId != null) {
+      final parent = catalogue.nodes[current.parentId!];
+      if (parent == null) break;
+      if (parent.stage == current.stage) {
+        expanded.add(parent.id);
+      }
+      current = parent;
+    }
+    return expanded;
   }
 }

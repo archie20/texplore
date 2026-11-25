@@ -2,26 +2,28 @@
   "schemaVersion": "1.0.0",
   "candidate": {
     "id": "crop",
-    "title": "Reliability of crop-disease AI under field-domain shift and data contamination",
+    "title": "Cross-domain calibration and selective prediction for crop-disease AI",
     "shortTitle": "Crop-disease reliability",
-    "workingTitle": "Evaluating the Impact of Dataset Contamination and Field-Domain Shift on the Reliability of AI-Based Crop-Disease Recognition",
-    "summary": "Can crop-disease AI retain calibrated confidence and useful selective prediction under leakage-resistant evaluation and cross-domain field shift, especially when tested on Ghanaian field imagery?",
-    "shortDescription": "A reproducible evaluation of leakage-aware splits, field-domain shift, calibration, and selective prediction, with Ghanaian field relevance where feasible.",
+    "workingTitle": "Evaluating Calibration and Selective Prediction for Crop-Disease Recognition Under Geographic and Acquisition Shift",
+    "summary": "Can crop-disease models retain reliable confidence and useful selective prediction when evaluated across independently sourced field domains with different acquisition conditions and geography?",
+    "shortDescription": "A reliability-centred experimental study of confidence calibration and selective prediction under acquisition/geographic shift, using leakage-resistant evaluation as a methodological control.",
     "priority": "primary",
     "status": "promising",
     "ghanaianRelevance": "Field agriculture in Ghana is a possible setting, not a requirement. Public datasets are preferred unless local images can be collected properly.",
-    "technicalContribution": "A leakage-resistant, cross-domain reliability evaluation for crop-disease recognition, with particular attention to calibration and selective prediction. A few-shot vision-language model (VLM) comparison is a candidate component, not the thesis contribution by itself.",
+    "technicalContribution": "A reproducible cross-domain evaluation protocol and comparative analysis of calibration and selective-prediction behaviour under documented acquisition/geographic shift. The contribution is not another disease classifier and does not assume that calibration on one benchmark transfers to other domains.",
     "feasibility": {
       "rating": "medium",
       "rationale": "This is a planning assessment. The work is measurable if a public dataset's provenance and split metadata can be audited."
     },
-    "dataRequirements": "Candidate leads discussed include CCMT (reported in project notes as 24,881 original images plus 102,976 augmented images, four crops and 22 categories), PlantVillage, Cassava, Pear, PlantDoc, AgriPath-LF16 (reported lead: 111,000 images, 16 crops, 41 diseases), and a 360-image wheat field set discussed with BLAP. These counts and dataset details are unverified; check versions, licensing, source/plant/session IDs, duplicates, augmentation provenance, and field conditions before selection.",
-    "evaluationDesign": "Prioritise original-image provenance and leakage-resistant grouping. Never treat augmented copies as independent observations. Compare random image splits with source/session/farm/plant-disjoint splits where identifiers support them. Evaluate cross-domain transfer and confidence calibration/selective prediction, not accuracy alone. Candidate metrics discussed include macro-F1, class recall, robustness/degradation gap, calibration, risk-coverage, and inference cost. If a VLM is included, use the same split and shift protocol as conventional baselines.",
+    "dataRequirements": "Candidate sources now include PaddyDoctor (16,225 rice field images, 13 classes); Ghana CCMT (24,881 raw images across cashew, cassava, maize and tomato, plus 102,976 augmented images across 22 classes); PlantVillage, Cassava, Tomato, PlantDoc and other field-oriented datasets. PALM-Net, EffiToRag, ARTEN and SAGE use different datasets and tasks. Gookyi et al. (2026) provide Ghanaian multi-modal cowpea/maize field-trial data and field photographs, but the published description does not identify disease labels; do not treat it as a supervised disease-recognition benchmark. Verify licensing, original-image provenance, source/plant/session/farm metadata, class compatibility and whether external domains are genuinely independent before selecting data.",
+    "evaluationDesign": "Use one bounded crop/disease task and a small number of independently sourced domains. Establish leakage-resistant splits at the strongest defensible grouping level (original image, plant, session, farm or source) before model evaluation; keep augmented derivatives with their source image and never treat them as independent observations. Compare calibration methods and selective-prediction strategies under in-domain and cross-domain evaluation. Report discrimination (e.g. macro-F1), calibration (ECE with documented binning, Brier score, NLL), selective risk/coverage (including AURC where appropriate), and degradation under defined acquisition/geographic shifts. Include conventional model baselines; a VLM may be included only if it serves the fixed reliability question. Separate corruption testing from genuine external-domain validation.",
     "majorRisks": [
-      "The candidate datasets may not expose source, plant, session, location, or duplicate metadata needed to test leakage rigorously.",
-      "The proposed public datasets may differ in crops, disease labels, image conditions, and licences; they cannot be combined casually.",
-      "The recent literature leads (Ye, Xiong/BLAP, Kang, AgriPath-LF16) have not been fully bibliographically and methodologically verified.",
-      "Adding few-shot vision-language models, Ghanaian field collection, explainability, and multiple crops at once would make the study too broad."
+      "Recent work already evaluates calibration, deduplication, corruption robustness, multi-dataset field performance, and knowledge-grounded diagnosis. The thesis must not claim that these dimensions have never been studied.",
+      "A single PaddyDoctor corpus, even with deduplication and corruption tests, does not establish generalisation across geography, season, device, or independently collected datasets.",
+      "Public datasets differ in crop, disease taxonomy, labels, collection conditions and licensing; cross-dataset evaluation may require a carefully defined common label subset or a single-crop scope.",
+      "CCMT raw and augmented image counts are now supported by its data paper, but source-level duplicate relationships and split leakage still require an audit; do not assume overlap without testing.",
+      "Gookyi et al. (2026) is a Ghanaian field-trial dataset, not a disease-labelled benchmark in the available dataset description.",
+      "Adding multiple crops, Ghanaian field collection, VLMs, explainability, RAG, and a new classifier simultaneously would exceed a focused one-year MPhil."
     ],
     "rootNodeId": "crop-problem",
     "tags": [
@@ -31,10 +33,11 @@
       "agriculture"
     ],
     "openDecisions": [
-      "Which dataset has sufficient provenance and a defensible leakage-resistant split?",
-      "Does CCMT expose original-image relationships and source/session metadata, or can related images be identified robustly?",
-      "Should the primary framing be few-shot VLM reliability under cross-domain shift, or a model-agnostic reliability protocol?",
-      "Can Ghanaian field imagery be obtained with labels and provenance, or should public cross-domain datasets be the sole experimental basis?"
+      "Which one crop/disease task and which two or three independently sourced domains provide genuinely different acquisition/geographic conditions?",
+      "Which datasets expose enough provenance to construct defensible plant/session/farm/source-disjoint splits?",
+      "What is the primary external-shift definition: acquisition device/lighting, geography, season, or a carefully chosen combination?",
+      "Which calibration and selective-prediction methods can be compared fairly with the available calibration data?",
+      "Will a conventional vision model be the primary test system, with a VLM retained only as an optional secondary comparison?"
     ],
     "readiness": [
       {
@@ -80,16 +83,16 @@
         "note": "Reliability measurement is a computing contribution if the scope stays narrow."
       }
     ],
-    "lastReviewed": "2026-11-19"
+    "lastReviewed": "2026-11-25"
   },
   "nodes": [
     {
       "id": "crop-problem",
       "candidateId": "crop",
       "stage": "thesis_problem",
-      "title": "Curated crop-disease accuracy may not be reliable in the field",
-      "summary": "A strong score on a cleaned image set can hide leakage, poor calibration, and a drop when the photographs come from real fields.",
-      "detail": "The project discussions rejected another generic crop-disease classifier as a weak contribution. The sharper problem is that high scores on curated datasets may overstate real-world reliability if correlated images or leakage cross the train/test boundary, and if field conditions differ from the benchmark. The thesis should test these mechanisms with a reproducible protocol rather than claim that all existing scores are inflated. A specific dataset concern discussed was that CCMT reportedly contains 24,881 original images and 102,976 augmented images across four crops and 22 categories, with identical/augmented train-test overlap reported in prior notes. These figures and the overlap claim are not independently verified in this data package.",
+      "title": "High crop-disease benchmark performance may not transfer across field domains",
+      "summary": "Strong results on one curated or deduplicated dataset do not establish reliable confidence on independently sourced field images.",
+      "detail": "The recent literature review materially narrows the problem. A PaddyDoctor study already combines a deduplicated split, post-hoc calibration, risk/coverage analysis and corruption testing. PALM-Net evaluates multiple datasets and claims field robustness; EffiToRag combines image diagnosis with knowledge retrieval; ARTEN publishes enhanced derivatives of an existing image collection; and SAGE explores source-grounded, agentic diagnosis at much larger scale. The thesis must therefore not frame calibration or field robustness as wholly unexplored. The remaining question to test is whether calibrated confidence and selective prediction remain reliable across independently sourced domains with different acquisition and geographic conditions. Dataset leakage control remains essential experimental hygiene, not necessarily the sole novelty claim. The CCMT dataset paper has now been checked for its 24,881 raw and 102,976 augmented image counts; the earlier claim of actual train/test overlap remains unverified and must be established by file-level auditing.",
       "parentId": null,
       "childIds": [
         "crop-question"
@@ -115,9 +118,9 @@
       "id": "crop-question",
       "candidateId": "crop",
       "stage": "thesis_question",
-      "title": "How well do crop-disease models maintain predictive confidence calibration and selective prediction under leakage-resistant cross-domain evaluation?",
-      "summary": "How do dataset contamination and field-domain shift affect predictive reliability, confidence calibration, and selective prediction?",
-      "detail": "The primary question concerns the effect of leakage/correlated sampling and field-domain shift on model performance, confidence calibration, and selective prediction. A discussion explored few-shot vision-language models on Ghanaian field imagery, but the study should not become a broad model comparison. The evaluation protocol is the core contribution. A narrower candidate framing discussed on 16 November was few-shot VLM crop-disease recognition under cross-domain shift, particularly Ghanaian field imagery. It remains a candidate framing, not a confirmed research gap.",
+      "title": "How do calibration and selective prediction behave under cross-domain field acquisition and geographic shift?",
+      "summary": "How reliably do model confidence and selective risk transfer across independently sourced crop-disease field domains when splits prevent source leakage?",
+      "detail": "The central question is now external-domain reliability: whether calibration and selective-prediction methods remain useful when a model moves between independently sourced datasets or field domains with different acquisition conditions and geography. Leakage-resistant splitting is a necessary control, informed by prior dataset contamination concerns. The recent PaddyDoctor paper means calibration on a single dataset is not itself a novelty claim. The thesis should measure cross-domain calibration and risk/coverage behaviour, not simply compare classifier accuracy.",
       "parentId": "crop-problem",
       "childIds": [
         "crop-relevance",
@@ -130,7 +133,8 @@
         "crop-area-0",
         "crop-area-1",
         "crop-area-2",
-        "crop-area-3"
+        "crop-area-3",
+        "crop-area-4"
       ],
       "evidenceStatus": "hypothesis",
       "evidenceLinkIds": [],
@@ -387,7 +391,7 @@
       "stage": "current_status_quo",
       "title": "High curated accuracy is a weak deployment claim",
       "summary": "High curated accuracy is a weak deployment claim",
-      "detail": "The discussions noted that crop-disease recognition is already a crowded classification area. PlantVillage, Cassava, Pear, and PlantDoc were mentioned in connection with a Description-Guided CLIP lead (Ye et al., 2026); BLAP (Xiong et al., 2026) was discussed in connection with OOD, leave-one-crop-out, severity, and recommendation validation. These are literature leads, not verified summaries. One reported limitation was that conventional confidence calibration was not clearly covered in the notes; this must be checked in the full texts. A reported CCMT description in project notes gives 24,881 original images plus 102,976 augmented images, four crops and 22 categories, and raises concern about identical/augmented overlap across splits. Treat this as an audit lead: confirm the dataset release, counts, metadata, and actual split construction before making any claim.",
+      "detail": "Crop-disease recognition is an established classification field. Recent work includes multi-dataset field-oriented recognition (PALM-Net), calibrated and deduplicated rice diagnosis on PaddyDoctor, knowledge-grounded diagnosis with EfficientNetV2 and RAG (EffiToRag), image enhancement datasets (ARTEN), and agentic visual diagnosis grounded in source-cited symptom knowledge (SAGE). The candidate must distinguish itself through a carefully bounded reliability question and an evaluation protocol, not by proposing another classifier.",
       "parentId": "crop-area-0",
       "childIds": [
         "crop-gap-0"
@@ -410,7 +414,7 @@
       "stage": "literature_gaps",
       "title": "Reported test scores may not survive a change of field conditions",
       "summary": "Reported test scores may not survive a change of field conditions",
-      "detail": "The proposed gap is not simply that field images are harder. It is whether reported predictive reliability survives documented changes in acquisition conditions and data source, and whether confidence remains meaningful under those shifts. Ye et al. and AgriPath-LF16 were noted as relevant leads, but exact datasets, split protocols, and field conditions have not been verified. The more specific unresolved question raised in the discussion is whether leakage-resistant evaluation changes confidence calibration, uncertainty, and selective prediction—not merely accuracy—under external/field domain shift.",
+      "detail": "The recent literature confirms that field variability and cross-dataset performance are already being studied. The narrower hypothesis is that reported robustness or accuracy across selected datasets does not by itself establish calibrated confidence and useful selective prediction under genuinely independent acquisition/geographic shifts. The exact domain definitions and comparable labels must be fixed before claiming a gap.",
       "parentId": "crop-status-0",
       "childIds": [
         "crop-topic-0"
@@ -509,7 +513,7 @@
       "stage": "current_status_quo",
       "title": "Random image splits can leak near-duplicates",
       "summary": "Random image splits can leak near-duplicates",
-      "detail": "The discussions raised the risk that random image-level splits can place near-duplicates, images from the same plant, or images from the same capture session in both training and test sets. Kang (2026) was mentioned as a lead on leakage/session-aware splits, and CCMT as a possible dataset with a reported 24,881 original images. Neither the citation details nor dataset count/provenance are verified. The notes also mention a Kang (2026) lead reporting that 91.9% of CDD test images share sensor readings with training images. The exact study, dataset, and meaning of sensor-reading overlap are unverified; the methodological implication to investigate is session/farm-disjoint evaluation.",
+      "detail": "The project raised the risk that random image-level splits can place near-duplicates or correlated images from the same plant/session/source in both train and test partitions. The recent PaddyDoctor paper reports exact and near-duplicate removal using SHA-256 and perceptual hashing before splitting. CCMT is a Ghanaian dataset paper with 24,881 raw images and a separate 102,976-image augmented collection across 22 classes. The CCMT counts are supported by its data paper; however, the existence and extent of leakage in any chosen split must be measured rather than assumed. Split original images first and keep augmented derivatives with their source.",
       "parentId": "crop-area-1",
       "childIds": [
         "crop-gap-1"
@@ -630,7 +634,7 @@
       "stage": "current_status_quo",
       "title": "Accuracy does not describe confidence",
       "summary": "Accuracy does not describe confidence",
-      "detail": "The project discussions distinguished accuracy from confidence quality. A model can retain reasonable accuracy while being poorly calibrated or confidently wrong under domain shift. BLAP (Xiong et al., 2026) was noted as a lead touching OOD and related evaluation dimensions; the exact calibration measures in that work are unverified. The discussions specifically identified the distinction between local evidence calibration and conventional predictive-confidence calibration. Ye et al. (2026) was reported to use Description-Guided CLIP with 16-shot accuracies of 93.16% (PlantVillage), 79.30% (Cassava), and 96.56% (Pear), and 56.96% on 21-class PlantDoc cross-domain evaluation. These are unverified project notes and must be checked against the paper.",
+      "detail": "A recent PaddyDoctor study reports post-hoc temperature scaling and multiple probability-quality metrics. Its reported test ECE increases slightly from 0.82% to 0.94% after scaling, while Brier score and NLL improve slightly. This is a concrete example of calibration trade-offs and shows why the thesis must report more than accuracy or a single ECE value. The study also reports AURC and corruption robustness. Its results are from one rice dataset and do not establish cross-geographic, seasonal or device-level external validity.",
       "parentId": "crop-area-2",
       "childIds": [
         "crop-gap-2"
@@ -651,9 +655,9 @@
       "id": "crop-gap-2",
       "candidateId": "crop",
       "stage": "literature_gaps",
-      "title": "Accuracy can hide unsafe confidence under distribution shift",
+      "title": "Calibration measured on one benchmark may not transfer to independent field domains",
       "summary": "Accuracy can hide unsafe confidence under distribution shift",
-      "detail": "The candidate gap is the joint evaluation of predictive performance, calibration, and selective prediction under the same documented contamination and field-shift conditions. Whether recent systems already cover this combination remains to be established from full-text review. The proposed focus is whether a model’s confidence is calibrated and whether selective prediction can reduce high-confidence errors while retaining useful coverage under domain shift. Do not infer conventional confidence calibration from local evidence calibration.",
+      "detail": "The research question is no longer whether crop-disease models can be calibrated at all: a recent PaddyDoctor study explicitly evaluates temperature scaling, ECE, Brier score, NLL and risk/coverage. The unresolved issue for this project is whether calibration and selective-prediction behaviour remain reliable when the evaluation domain changes across independent sources, devices, locations or seasons. This is a candidate gap requiring a systematic comparison of recent studies and a feasible external dataset design; it is not yet an established absence in the literature.",
       "parentId": "crop-status-2",
       "childIds": [
         "crop-topic-2"
@@ -770,7 +774,7 @@
       "stage": "current_status_quo",
       "title": "Another classifier bake-off is not the contribution",
       "summary": "Another classifier bake-off is not the contribution",
-      "detail": "The discussions considered few-shot vision-language models and a possible Ghanaian field-image evaluation. The working idea was to compare conventional models with a selected VLM under a fixed leakage-aware protocol. This is optional: a model-family comparison should be included only if it clarifies the reliability question and does not turn the thesis into a broad benchmark. The VLM direction was motivated by the Description-Guided CLIP lead and BLAP. Project notes describe BLAP as 990 images across 11 crops and 33 categories, reporting 92.78% accuracy, plus a 360-image wheat-field set with 36/36 test images reportedly correct. Exact details and evaluation conditions are unverified.",
+      "detail": "The recent landscape is broader than conventional image classifiers. EffiToRag couples EfficientNetV2 diagnosis to retrieval-grounded agronomic recommendations; SAGE uses a training-free agentic visual reasoning process with source-grounded symptom knowledge; PALM-Net proposes population-aware multilinear feature learning. These are different system designs and should not be treated as directly comparable baselines without matching tasks, data and evaluation protocols. A VLM/agent comparison remains optional, not the core contribution.",
       "parentId": "crop-area-3",
       "childIds": [
         "crop-gap-3"
@@ -858,6 +862,204 @@
       "validationRequirements": [],
       "gapStrength": null,
       "lastReviewed": "2026-11-19"
+    },
+    {
+      "id": "crop-area-4",
+      "candidateId": "crop",
+      "stage": "thesis_areas",
+      "title": "External-domain validation and confidence transfer",
+      "summary": "What happens to confidence and selective risk when the source domain changes?",
+      "detail": "This area isolates the newly narrowed question. It brings together recent calibrated single-corpus work, multi-dataset field-oriented recognition, knowledge-grounded systems and Ghanaian data availability. The central comparison must be between genuinely independent domains, not merely different random partitions of one source collection.",
+      "parentId": "crop-question",
+      "childIds": [
+        "crop-status-4",
+        "crop-status-5",
+        "crop-status-6",
+        "crop-gap-4"
+      ],
+      "evidenceStatus": "hypothesis",
+      "evidenceLinkIds": [],
+      "relatedNodeIds": [],
+      "tags": [
+        "cross-domain",
+        "calibration",
+        "selective-prediction"
+      ],
+      "sortOrder": 4,
+      "notes": [],
+      "assumptions": [],
+      "risks": [],
+      "validationRequirements": [],
+      "gapStrength": null,
+      "lastReviewed": "2026-11-25"
+    },
+    {
+      "id": "crop-status-4",
+      "candidateId": "crop",
+      "stage": "current_status_quo",
+      "title": "A PaddyDoctor study already evaluates deduplication, calibration and corruption robustness",
+      "summary": "A recent rice-disease study reports a leakage-resistant split, calibration trade-offs and strong sensitivity to brightness and blur.",
+      "detail": "Singh, Singh and Dhelim evaluate a ResNet-34+CBAM rice-disease model on 16,225 PaddyDoctor field images across 13 classes. The paper reports 95.13% accuracy and 95.14% weighted F1 on its deduplicated test split. Temperature scaling slightly improves Brier score (0.0760 to 0.0758) and NLL (0.1573 to 0.1566), but test ECE rises from 0.82% to 0.94%. The paper also reports severe accuracy drops under brightness shift (47.72%) and Gaussian blur (32.13%). Its stated limitation is the need for evaluation across seasons, devices and geographic regions. These findings directly narrow the proposed thesis: calibration and corruption testing exist, while external-domain calibration transfer remains a defensible question to investigate.",
+      "parentId": "crop-area-4",
+      "childIds": [],
+      "evidenceStatus": "abstract_checked",
+      "evidenceLinkIds": [
+        "ev-crop-new-singh"
+      ],
+      "relatedNodeIds": [],
+      "tags": [
+        "paddydoc",
+        "calibration",
+        "deduplication"
+      ],
+      "sortOrder": 0,
+      "notes": [],
+      "assumptions": [],
+      "risks": [],
+      "validationRequirements": [],
+      "gapStrength": null,
+      "lastReviewed": "2026-11-25"
+    },
+    {
+      "id": "crop-status-5",
+      "candidateId": "crop",
+      "stage": "current_status_quo",
+      "title": "Recent systems address field robustness and knowledge grounding through different methods",
+      "summary": "PALM-Net, EffiToRag, ARTEN and SAGE broaden the current status quo, but they do not constitute one directly comparable calibration study.",
+      "detail": "PALM-Net evaluates PlantVillage, Cassava and Tomato datasets with a population-aware multilinear network and reports Top-1 accuracies of 99.32%, 84.56% and 97.44%, respectively. EffiToRag combines EfficientNetV2 diagnosis with retrieval-augmented agronomic recommendations and reports results on a held-out CDDM set of 11,621 images and 60 classes. ARTEN is an enhanced derivative of an existing 21,875-image multi-crop collection; its authors state that no new field observations were introduced and that image-quality metrics alone do not establish preservation of disease-specific features. SAGE is an agentic, source-grounded visual diagnosis system and dataset spanning approximately 839,000 images, 335 crops and 1,251 disease classes; its project page reports an average 16.2 percentage-point gain from symptom knowledge at the full reference budget. These systems differ in tasks, data and methods. The thesis should compare only what can be fairly aligned and should not imply that these works all evaluate confidence calibration.",
+      "parentId": "crop-area-4",
+      "childIds": [],
+      "evidenceStatus": "abstract_checked",
+      "evidenceLinkIds": [
+        "ev-crop-new-palm",
+        "ev-crop-new-effitorag",
+        "ev-crop-new-arten",
+        "ev-crop-new-sage"
+      ],
+      "relatedNodeIds": [],
+      "tags": [
+        "field-robustness",
+        "vision-language",
+        "rag"
+      ],
+      "sortOrder": 1,
+      "notes": [],
+      "assumptions": [],
+      "risks": [],
+      "validationRequirements": [],
+      "gapStrength": null,
+      "lastReviewed": "2026-11-25"
+    },
+    {
+      "id": "crop-status-6",
+      "candidateId": "crop",
+      "stage": "current_status_quo",
+      "title": "Ghanaian crop datasets differ in their suitability for disease-reliability experiments",
+      "summary": "CCMT is disease-labelled Ghanaian image data; the Gookyi field-trial dataset is contextual agricultural data, not a disease-labelled benchmark.",
+      "detail": "The CCMT data paper describes 24,881 raw images from cashew, cassava, maize and tomato and a separate augmented collection of 102,976 images across 22 categories. The Gookyi et al. 2026 Mendeley dataset documents a 15-week field trial at Sumbrungu, Bolgatanga, covering six cowpea and maize varieties, soil/environmental variables, irrigation and field photographs. Its published description does not provide disease labels, so it may support contextual understanding of Ghanaian field acquisition but should not be treated as a supervised crop-disease test set without additional verified annotations.",
+      "parentId": "crop-area-4",
+      "childIds": [],
+      "evidenceStatus": "metadata_checked",
+      "evidenceLinkIds": [
+        "ev-crop-new-ccmt",
+        "ev-crop-new-gookyi"
+      ],
+      "relatedNodeIds": [],
+      "tags": [
+        "ghana",
+        "dataset-provenance"
+      ],
+      "sortOrder": 2,
+      "notes": [],
+      "assumptions": [],
+      "risks": [],
+      "validationRequirements": [],
+      "gapStrength": null,
+      "lastReviewed": "2026-11-25"
+    },
+    {
+      "id": "crop-gap-4",
+      "candidateId": "crop",
+      "stage": "literature_gaps",
+      "title": "Cross-domain confidence calibration and selective risk remain to be tested under independent acquisition and geographic shift",
+      "summary": "The proposed gap concerns transfer of reliability, not the existence of calibration methods.",
+      "detail": "The PaddyDoctor study demonstrates calibration and corruption evaluation on one deduplicated rice corpus, while PALM-Net and other recent systems explore multi-dataset or field-oriented diagnosis. The available source material does not establish a common, leakage-resistant comparison of calibration and selective-prediction behaviour across independent geographic/acquisition domains. This is a bounded research hypothesis, not proof that no such study exists. A systematic full-text review must check whether recent papers already perform this exact combination.",
+      "parentId": "crop-area-4",
+      "childIds": [
+        "crop-topic-4"
+      ],
+      "evidenceStatus": "hypothesis",
+      "evidenceLinkIds": [
+        "ev-crop-gap-new-singh",
+        "ev-crop-gap-new-palm",
+        "ev-crop-gap-new-effitorag",
+        "ev-crop-gap-new-sage"
+      ],
+      "relatedNodeIds": [],
+      "tags": [
+        "unconfirmed-gap",
+        "external-validation"
+      ],
+      "sortOrder": 3,
+      "notes": [],
+      "assumptions": [],
+      "risks": [],
+      "validationRequirements": [],
+      "gapStrength": "unconfirmed",
+      "lastReviewed": "2026-11-25"
+    },
+    {
+      "id": "crop-topic-4",
+      "candidateId": "crop",
+      "stage": "potential_topics",
+      "title": "Evaluate calibration and selective prediction across independent field domains",
+      "summary": "Hold the model protocol fixed and test reliability across a small, defensible set of independent acquisition/geographic domains.",
+      "detail": "A focused study could select one crop/disease task and two or three datasets with sufficiently compatible labels and documented provenance. Establish source-disjoint or group-disjoint splits within each source, then evaluate cross-domain transfer, calibration and selective prediction. Avoid making Ghanaian data collection, multiple crop families, RAG, explainability and VLM development all core deliverables.",
+      "parentId": "crop-gap-4",
+      "childIds": [
+        "crop-rq-4-0"
+      ],
+      "evidenceStatus": "hypothesis",
+      "evidenceLinkIds": [],
+      "relatedNodeIds": [],
+      "tags": [
+        "candidate-topic"
+      ],
+      "sortOrder": 0,
+      "notes": [],
+      "assumptions": [],
+      "risks": [],
+      "validationRequirements": [],
+      "gapStrength": null,
+      "lastReviewed": "2026-11-25"
+    },
+    {
+      "id": "crop-rq-4-0",
+      "candidateId": "crop",
+      "stage": "research_questions",
+      "title": "How do calibration and selective-prediction methods behave across independent crop-disease field domains?",
+      "summary": "How do calibration quality and risk-coverage change when evaluation moves across datasets with different acquisition and geographic conditions?",
+      "detail": "The experiment should report both in-domain and cross-domain results using the same model and calibration protocol. It should distinguish controlled corruption tests from genuine external-domain evaluation and explain the provenance of each dataset and split.",
+      "parentId": "crop-topic-4",
+      "childIds": [],
+      "evidenceStatus": "hypothesis",
+      "evidenceLinkIds": [],
+      "relatedNodeIds": [],
+      "tags": [
+        "primary-research-question"
+      ],
+      "sortOrder": 0,
+      "notes": [],
+      "assumptions": [],
+      "risks": [],
+      "validationRequirements": [
+        "Use at least two genuinely independent domains with compatible labels.",
+        "Document split grouping, deduplication, calibration data and test data separately.",
+        "Report ECE with binning details, Brier score, NLL, risk-coverage/AURC and discrimination metrics.",
+        "Do not fit calibration parameters on the external test domain."
+      ],
+      "gapStrength": null,
+      "lastReviewed": "2026-11-25"
     }
   ],
   "evidenceLinks": [
@@ -925,6 +1127,149 @@
       "pageOrSection": null,
       "notes": "Bibliographic record and the paper's actual findings still need to be checked.",
       "confidence": "low"
+    },
+    {
+      "id": "ev-crop-new-singh",
+      "nodeId": "crop-status-4",
+      "publicationId": "pub-paddydoctor-singh-2026",
+      "relationship": "supports_context",
+      "claim": "The article reports a deduplicated PaddyDoctor evaluation with post-hoc temperature scaling, ECE, Brier, NLL and corruption analysis.",
+      "limitation": "The evaluation is based on one PaddyDoctor corpus; the paper itself identifies cross-season, cross-device and cross-geographic validation as future work.",
+      "evidenceStrength": "direct",
+      "verificationStatus": "verified_abstract",
+      "pageOrSection": null,
+      "notes": "Abstract and article landing-page content checked; figures are author-reported.",
+      "confidence": "medium"
+    },
+    {
+      "id": "ev-crop-new-palm",
+      "nodeId": "crop-status-5",
+      "publicationId": "pub-palm-net-2026",
+      "relationship": "supports_context",
+      "claim": "PALM-Net reports results on PlantVillage, Cassava and Tomato datasets and is explicitly framed around field robustness.",
+      "limitation": "The available abstract emphasises classification and feature robustness; do not infer calibration/selective-prediction evaluation from it.",
+      "evidenceStrength": "direct",
+      "verificationStatus": "verified_abstract",
+      "pageOrSection": null,
+      "notes": "",
+      "confidence": "medium"
+    },
+    {
+      "id": "ev-crop-new-effitorag",
+      "nodeId": "crop-status-5",
+      "publicationId": "pub-effitorag-2026",
+      "relationship": "supports_context",
+      "claim": "EffiToRag combines EfficientNetV2 diagnosis with retrieval-grounded agronomic recommendation on a held-out CDDM test set.",
+      "limitation": "Different task from calibration transfer; held-out CDDM performance is not proof of independent external-domain validity.",
+      "evidenceStrength": "direct",
+      "verificationStatus": "verified_abstract",
+      "pageOrSection": null,
+      "notes": "",
+      "confidence": "medium"
+    },
+    {
+      "id": "ev-crop-new-arten",
+      "nodeId": "crop-status-5",
+      "publicationId": "pub-arten-2026",
+      "relationship": "supports_context",
+      "claim": "ARTEN publishes enhanced derivatives of an existing 21,875-image multi-crop collection and explicitly states that no new field observations were introduced.",
+      "limitation": "A derived enhanced image collection should not be counted as an independent field domain; image-quality metrics do not prove diagnostic preservation.",
+      "evidenceStrength": "direct",
+      "verificationStatus": "verified_abstract",
+      "pageOrSection": null,
+      "notes": "",
+      "confidence": "medium"
+    },
+    {
+      "id": "ev-crop-new-sage",
+      "nodeId": "crop-status-5",
+      "publicationId": "pub-sage-2026",
+      "relationship": "supports_context",
+      "claim": "SAGE combines a large multi-crop image collection with source-grounded symptom knowledge and an agentic visual reasoning baseline.",
+      "limitation": "SAGE is an adjacent agentic/VLM task and a non-archival workshop contribution; it is not directly comparable to closed-set calibrated classification.",
+      "evidenceStrength": "direct",
+      "verificationStatus": "verified_abstract",
+      "pageOrSection": null,
+      "notes": "",
+      "confidence": "medium"
+    },
+    {
+      "id": "ev-crop-new-ccmt",
+      "nodeId": "crop-status-6",
+      "publicationId": "pub-ccmt",
+      "relationship": "dataset_or_benchmark",
+      "claim": "The CCMT data paper reports 24,881 raw Ghanaian crop images and a separate augmented collection of 102,976 images across 22 categories.",
+      "limitation": "The data paper does not establish the source-level duplicate relationships or leakage in a chosen train/test split; audit the released files and keep augmented derivatives grouped with their originals.",
+      "evidenceStrength": "direct",
+      "verificationStatus": "verified_abstract",
+      "pageOrSection": null,
+      "notes": "",
+      "confidence": "medium"
+    },
+    {
+      "id": "ev-crop-new-gookyi",
+      "nodeId": "crop-status-6",
+      "publicationId": "pub-gookyi-2026",
+      "relationship": "dataset_or_benchmark",
+      "claim": "The Gookyi et al. dataset documents Ghanaian multi-modal field-trial observations and field photographs for cowpea and maize.",
+      "limitation": "The published dataset description does not identify disease labels; it is contextual field data, not a disease-labelled test benchmark.",
+      "evidenceStrength": "direct",
+      "verificationStatus": "metadata_verified",
+      "pageOrSection": null,
+      "notes": "",
+      "confidence": "medium"
+    },
+    {
+      "id": "ev-crop-gap-new-singh",
+      "nodeId": "crop-gap-4",
+      "publicationId": "pub-paddydoctor-singh-2026",
+      "relationship": "supports_context",
+      "claim": "The paper explicitly identifies evaluation across seasons, devices and geographic regions as needed beyond its single PaddyDoctor corpus.",
+      "limitation": "This is a limitation stated by one study, not proof that no other study has performed external validation.",
+      "evidenceStrength": "direct",
+      "verificationStatus": "verified_abstract",
+      "pageOrSection": null,
+      "notes": "",
+      "confidence": "medium"
+    },
+    {
+      "id": "ev-crop-gap-new-palm",
+      "nodeId": "crop-gap-4",
+      "publicationId": "pub-palm-net-2026",
+      "relationship": "supports_context",
+      "claim": "PALM-Net evaluates multiple named datasets and reports field-robustness claims, showing that multi-dataset evaluation is already part of the literature.",
+      "limitation": "The available abstract does not establish that its protocol measures cross-domain calibration or selective risk.",
+      "evidenceStrength": "contextual",
+      "verificationStatus": "verified_abstract",
+      "pageOrSection": null,
+      "notes": "",
+      "confidence": "medium"
+    },
+    {
+      "id": "ev-crop-gap-new-effitorag",
+      "nodeId": "crop-gap-4",
+      "publicationId": "pub-effitorag-2026",
+      "relationship": "supports_context",
+      "claim": "EffiToRag provides a recent held-out benchmark and a knowledge-grounded diagnostic pipeline.",
+      "limitation": "The available abstract does not establish calibration transfer across independent geographic/acquisition domains.",
+      "evidenceStrength": "contextual",
+      "verificationStatus": "verified_abstract",
+      "pageOrSection": null,
+      "notes": "",
+      "confidence": "medium"
+    },
+    {
+      "id": "ev-crop-gap-new-sage",
+      "nodeId": "crop-gap-4",
+      "publicationId": "pub-sage-2026",
+      "relationship": "supports_context",
+      "claim": "SAGE provides an adjacent agentic diagnosis approach with source-grounded symptom knowledge and a large multi-crop resource.",
+      "limitation": "Its task and evaluation are not directly equivalent to calibrated classifier confidence and selective prediction.",
+      "evidenceStrength": "contextual",
+      "verificationStatus": "verified_abstract",
+      "pageOrSection": null,
+      "notes": "",
+      "confidence": "medium"
     }
   ],
   "crossLinks": []

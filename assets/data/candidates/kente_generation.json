@@ -2,26 +2,28 @@
   "schemaVersion": "1.0.0",
   "candidate": {
     "id": "kente",
-    "title": "Constraint-Aware Computational Generation of Loom-Compatible Asante Kente Patterns",
+    "title": "Formal representation and constraint-aware generation of selected Asante Kente weaving structures",
     "shortTitle": "Kente generation",
-    "workingTitle": "Constraint-Aware Computational Generation of Loom-Compatible Asante Kente Patterns",
-    "summary": "Can AI reliably generate patterns to weave? The refined direction is computational generation of structurally valid selected Asante Kente patterns and instructions for a specified Bonwire narrow-strip loom context.",
-    "shortDescription": "A Ghana-grounded computational-design study of selected Asante Kente structures, constraint-aware generation, and loom-compatible instructions.",
+    "workingTitle": "Formal Representation and Constraint-Aware Generation of Selected Asante Kente Weaving Structures",
+    "summary": "Can selected Asante Kente design structures be represented computationally and generated with explicit constraints linking motif, weave structure and the operations of a specified indigenous loom?",
+    "shortDescription": "A Ghana-grounded computational study of Kente-specific structural grammar, loom-operation representation, constraint-aware generation and physical/expert validation.",
     "priority": "primary",
     "status": "promising",
     "ghanaianRelevance": "Directly grounded in Ghanaian textile practice. The scope must stay on selected structures rather than all Kente traditions.",
-    "technicalContribution": "A layered computational representation linking visible design, weave structure, and Bonwire narrow-strip-loom execution; explicit constraints for a bounded pattern class; and a generation/validation method. The traditional narrow-strip loom and any broadloom translation must be treated as distinct contexts.",
+    "technicalContribution": "A machine-readable representation linking selected Asante Kente motifs, weave/interlacement structure and loom-operation sequence; explicit constraints for a bounded loom context; and a generation/validation method. The contribution must go beyond producing a visual pattern or a generic weave draft. It must distinguish traditional Bonwire narrow-strip practice from modified two-heddle/countershaft or multi-shaft handloom systems documented in related Ghanaian studies.",
     "feasibility": {
       "rating": "medium",
       "rationale": "This is a planning assessment. Feasibility depends on reliable weave-structure information and a testable definition of loom compatibility."
     },
-    "dataRequirements": "Documented examples of selected Asante Kente structures, motif-to-draft mappings, point-paper grids, and loom-specific information for the Bonwire narrow-strip loom. Badoe (2005) and Badoe & Opoku-Asare are priority documentation leads but require full-text/bibliographic verification. Practitioner validation is desirable and must be confirmed early.",
-    "evaluationDesign": "Compare unconstrained generation with constraint-aware generation using machine-checkable structural validity, constraint satisfaction, diversity, and completeness/consistency of weaving instructions. If practitioner access is secured, add expert assessment and possibly physical validation. Image similarity or visual plausibility alone cannot establish weaveability.",
+    "dataRequirements": "Selected Asante Kente structures and motifs; source-checked structural descriptions and point-paper/draft examples; documented warp/weft, heddling, shaft, lifting/treadling and tie-up information for the specified loom; and practitioner input for validation. Vigbedor et al. (2024) documents WeavePoint 7.2 use for weave, draft, lifting/stepping order and tie-up with test weaving on a modified indigenous two-heddle loom. Vigbedor et al. (2026) reports physical fabric production and artisan evaluation on a modified four-post countershaft handloom using four-to-six shaft configurations, including master weavers from Bonwire and Agortime-Kpetoe. Neither paper by itself establishes a Kente-specific grammar or proves equivalence to the traditional Bonwire narrow-strip loom. Data availability in these papers is by reasonable request; access is not guaranteed.",
+    "evaluationDesign": "Define one target loom context and a bounded set of Kente structures. Compare unconstrained or generic generation with a formal Kente-specific representation and constraint-aware generation. Evaluate representation completeness, structural validity, constraint satisfaction, motif/structure fidelity, diversity, and completeness/consistency of loom-operation outputs (e.g. draft, heddling, lifting/treadling and tie-up as applicable to the selected loom). Obtain expert review and, if feasible, physically weave a small number of outputs on the specified target loom. Physical results from a modified countershaft or multi-shaft loom must not be reported as validation on a traditional narrow-strip loom.",
     "majorRisks": [
-      "The loom type, bounded pattern class, and formal definition of compatibility are not yet fixed.",
-      "A visually plausible image may not encode the interlacing or execution sequence needed to weave it.",
-      "The 2024–2026 textile-generation and co-design leads have incomplete or unverified bibliographic details; they cannot yet establish novelty or a gap.",
-      "If practitioner or loom access is unavailable, claims must be limited to formal structural validity rather than production-ready execution."
+      "The target loom and the meaning of loom compatibility are still not fixed. A traditional Bonwire narrow-strip loom, a modified indigenous two-heddle loom and a four-to-six-shaft countershaft handloom are not interchangeable contexts.",
+      "Recent Ghanaian studies already demonstrate WeavePoint-based drafts, lifting/stepping plans, tie-up and physical test weaving; novelty cannot be claimed merely for converting an image into a weave draft.",
+      "The 2026 countershaft study includes artisans from Bonwire and Agortime-Kpetoe, but its modified four-post, four-to-six-shaft setup must not be assumed to document traditional narrow-strip operation.",
+      "A generic textile grammar may fail to capture the relationship between selected Asante Kente motifs, weave structure and the specified loom operations.",
+      "Practitioner access, loom access and physical validation may be difficult to secure within the MPhil timeline.",
+      "If reliable operation data cannot be obtained, the thesis must narrow its claim to formal structural validity rather than production-ready loom compatibility."
     ],
     "rootNodeId": "kente-problem",
     "tags": [
@@ -31,11 +33,11 @@
       "ghana"
     ],
     "openDecisions": [
-      "Which specific Kente structures (e.g. bounded structures documented in the literature) will be included?",
-      "What exact Bonwire narrow-strip-loom parameters and execution instructions can be documented and validated?",
-      "Can the representation cover warp/weft and supplementary-weft structure, draft, heddling, shafts, and tie-up—or must it be restricted to a subset?",
-      "Can experienced Bonwire weavers validate the rules and a small number of generated instructions within the MPhil timeframe?",
-      "How should the thesis distinguish traditional narrow-strip-loom execution from broadloom translation?"
+      "Which bounded Asante Kente pattern structures and motif families will be represented?",
+      "What exact target loom is in scope: traditional Bonwire narrow-strip loom, a specified modified indigenous two-heddle loom, or another explicitly documented setup?",
+      "Which loom-operation variables are required for the selected loom (e.g. warp/weft, heddling, shaft assignment, lifting/treadling, tie-up and pick sequence)?",
+      "How will the thesis distinguish and validate traditional narrow-strip practice against the modified two-heddle and four-to-six-shaft countershaft systems described in Vigbedor et al.?",
+      "Can the relevant loom specifications, WeavePoint/draft examples and practitioner access be obtained early enough to support physical or expert validation?"
     ],
     "readiness": [
       {
@@ -81,16 +83,16 @@
         "note": "The contribution is computational if the scope stays on representation and validation."
       }
     ],
-    "lastReviewed": "2026-11-19"
+    "lastReviewed": "2026-11-25"
   },
   "nodes": [
     {
       "id": "kente-problem",
       "candidateId": "kente",
       "stage": "thesis_problem",
-      "title": "Plausible textile images are not necessarily weavable structures",
-      "summary": "A generated textile image can look convincing while failing to encode a valid weave structure or a sequence that a specified loom can execute.",
-      "detail": "The initial idea was whether AI could reliably generate patterns that can be woven. The research was narrowed after considering recent textile-generation work: generic image generation is not a defensible novelty claim by itself. The computing problem is whether selected Asante Kente structures can be represented explicitly and generated subject to structural and loom-specific constraints. The thesis must define the pattern class and loom context rather than generalise to all Kente traditions. The November discussion narrowed the context toward executable instructions for a Bonwire narrow-strip loom. This must be distinguished from broadloom examples or translations; the traditional loom versus broadloom relationship remains an open technical and cultural boundary.",
+      "title": "Visual Kente-like patterns do not necessarily encode valid weaving structure or loom operations",
+      "summary": "A convincing pattern image may omit the interlacement and operation sequence needed to reproduce it on a specified indigenous loom.",
+      "detail": "The research has moved beyond asking whether AI can draw Kente-like patterns. Recent Ghanaian weaving studies demonstrate that indigenous loom structures can be represented through weave drafts, heddling/lifting plans, tie-up information and physical test weaving. The technical research opportunity is therefore to formalise a Kente-specific relationship between selected motifs, interlacement structure and the operations of one specified loom, then generate and validate patterns against those constraints. The modified two-heddle and countershaft systems in the recent studies must not be assumed equivalent to the traditional Bonwire narrow-strip loom.",
       "parentId": null,
       "childIds": [
         "kente-question"
@@ -118,9 +120,9 @@
       "id": "kente-question",
       "candidateId": "kente",
       "stage": "thesis_question",
-      "title": "How can selected Asante Kente weaving structures be represented computationally and used to generate novel patterns that satisfy defined Bonwire narrow-strip-loom constraints?",
-      "summary": "How can selected Asante Kente structures be encoded and generated as patterns and instructions that satisfy explicit constraints for a Bonwire narrow-strip loom?",
-      "detail": "The central question is not whether an image model can draw Kente-like cloth. It is how selected Asante Kente structures can be encoded computationally, how constraints derived from the selected weaving context can be enforced, and how generated outputs can be evaluated for structural validity. The scope must be fixed to one bounded pattern class and one loom context. The working scope discussed is Bonwire narrow-strip-loom instructions. Broadloom examples in educational documentation should not be assumed to validate traditional narrow-strip execution.",
+      "title": "How can selected Asante Kente structures be represented and generated with constraints linking motif, weave structure and specified loom operations?",
+      "summary": "How can a bounded Kente-specific structural grammar support constraint-aware generation and validation for one explicitly defined loom context?",
+      "detail": "The central question is how to encode selected Asante Kente motifs and weave structures in a machine-readable representation that also captures the operation sequence required by a specified loom. The recent literature shows that digital drafts and physical weaving tests already exist for modified indigenous loom systems. The thesis must identify what is specific to the selected Kente structures and target loom, and must not claim that a generic draft or a modified countershaft sample proves compatibility with a traditional narrow-strip loom.",
       "parentId": "kente-problem",
       "childIds": [
         "kente-relevance",
@@ -132,7 +134,8 @@
         "kente-area-0",
         "kente-area-1",
         "kente-area-2",
-        "kente-area-3"
+        "kente-area-3",
+        "kente-area-4"
       ],
       "evidenceStatus": "hypothesis",
       "evidenceLinkIds": [],
@@ -751,9 +754,9 @@
       "id": "kente-status-3",
       "candidateId": "kente",
       "stage": "current_status_quo",
-      "title": "Tools and papers may stop at the drawing",
+      "title": "Existing loom-design workflows can represent drafts and operation plans, so image-to-draft alone is not novel",
       "summary": "Tools and papers may stop at the drawing",
-      "detail": "The discussions repeatedly distinguished a digital pattern image from a weaving specification. A file may describe appearance without providing the interlacement, thread sequence, lift plan, or other loom-specific information needed for execution. Whether existing tools stop at the drawing must be checked against their actual outputs.",
+      "detail": "Vigbedor et al. (2024) report using WeavePoint 7.2 to develop the weave, draft, lifting/stepping order and tie-up, followed by test weaving on an indigenous two-heddle loom modified with a countershaft shedding mechanism. This establishes a Ghanaian precedent for connecting digital weave plans to physical weaving. It does not establish a Kente-specific computational grammar or the operation rules of the traditional Bonwire narrow-strip loom. The thesis contribution must be more precise than simply translating an image into a draft.",
       "parentId": "kente-area-3",
       "childIds": [
         "kente-gap-3"
@@ -774,9 +777,9 @@
       "id": "kente-gap-3",
       "candidateId": "kente",
       "stage": "literature_gaps",
-      "title": "A digital pattern may not be an executable weaving specification",
+      "title": "A Kente-specific mapping from motif and weave structure to the target loom operation sequence remains to be established",
       "summary": "A digital pattern may not be an executable weaving specification",
-      "detail": "The potential gap is a missing or incomplete mapping from a generated visual pattern to a valid, executable specification for one selected loom context. The thesis should not claim production readiness unless the output format and physical execution are validated.",
+      "detail": "The gap should not be framed as a general absence of digital weaving plans: WeavePoint-based weave/draft/lifting/tie-up information and physical test weaving are already documented in Ghanaian indigenous loom research. The narrower hypothesis is whether selected Asante Kente structures can be represented in a formal grammar that preserves motif-to-interlacement relationships and maps them to complete, valid operations for one specified loom context. This requires full-text comparison and technical/practitioner validation; it is not yet an established absence.",
       "parentId": "kente-status-3",
       "childIds": [
         "kente-topic-3"
@@ -862,6 +865,199 @@
       "validationRequirements": [],
       "gapStrength": null,
       "lastReviewed": "2026-11-19"
+    },
+    {
+      "id": "kente-area-4",
+      "candidateId": "kente",
+      "stage": "thesis_areas",
+      "title": "Kente-specific structural grammar and loom-operation representation",
+      "summary": "How should selected Kente motifs, interlacement structures and loom operations be encoded together?",
+      "detail": "This area captures the main technical contribution after reviewing Ghanaian loom-engineering work. It distinguishes the design layer, weave/interlacement layer and loom-operation layer, and asks how they can be linked in a formal representation for one bounded Kente and loom scope.",
+      "parentId": "kente-question",
+      "childIds": [
+        "kente-status-4",
+        "kente-status-5",
+        "kente-gap-4"
+      ],
+      "evidenceStatus": "hypothesis",
+      "evidenceLinkIds": [],
+      "relatedNodeIds": [],
+      "tags": [
+        "formal-representation",
+        "weaving-grammar",
+        "loom-operations"
+      ],
+      "sortOrder": 4,
+      "notes": [],
+      "assumptions": [],
+      "risks": [],
+      "validationRequirements": [],
+      "gapStrength": null,
+      "lastReviewed": "2026-11-25"
+    },
+    {
+      "id": "kente-status-4",
+      "candidateId": "kente",
+      "stage": "current_status_quo",
+      "title": "Ghanaian loom research already links digital drafts to physical test weaving",
+      "summary": "A 2024 study reports WeavePoint 7.2 drafts, lifting/stepping order, tie-up and test weaving on a modified indigenous two-heddle loom.",
+      "detail": "Vigbedor, Akrofi, Bruce-Amartey Jnr. and Howard describe integrating a countershaft shedding mechanism into an indigenous two-heddle loom. The paper reports use of WeavePoint 7.2 to create the weave, draft, lifting/stepping order and tie-up, followed by physical test weaving. This is a relevant methodological and technical precedent. It is not evidence that the same operation plan applies unchanged to a traditional Bonwire narrow-strip loom, nor that the work provides a formal Kente-specific computational grammar.",
+      "parentId": "kente-area-4",
+      "childIds": [],
+      "evidenceStatus": "abstract_checked",
+      "evidenceLinkIds": [
+        "ev-kente-new-vigbedor-2024"
+      ],
+      "relatedNodeIds": [],
+      "tags": [
+        "weavepoint",
+        "draft",
+        "physical-validation"
+      ],
+      "sortOrder": 0,
+      "notes": [],
+      "assumptions": [],
+      "risks": [],
+      "validationRequirements": [],
+      "gapStrength": null,
+      "lastReviewed": "2026-11-25"
+    },
+    {
+      "id": "kente-status-5",
+      "candidateId": "kente",
+      "stage": "current_status_quo",
+      "title": "Recent Ghanaian research includes multi-shaft indigenous handloom trials and artisan evaluation",
+      "summary": "A 2026 study reports fabric production and physical/mechanical evaluation on a modified four-post countershaft handloom with four-to-six shaft configurations.",
+      "detail": "Vigbedor, Akrofi, Nyante, Asinyo and Frimpong report a modified indigenous four-post handloom with a countershaft shedding system. The study produced plain derivatives, twills, diamonds and satin structures across four-to-six shaft configurations; it combined tensile and drape assessments with artisan evaluation involving master weavers from Bonwire and Agortime-Kpetoe. This supports the feasibility of physical and practitioner validation in Ghanaian weaving research. However, the modified multi-shaft setup is not automatically equivalent to traditional Bonwire narrow-strip practice.",
+      "parentId": "kente-area-4",
+      "childIds": [],
+      "evidenceStatus": "abstract_checked",
+      "evidenceLinkIds": [
+        "ev-kente-new-vigbedor-2026"
+      ],
+      "relatedNodeIds": [],
+      "tags": [
+        "countershaft",
+        "bonwire",
+        "physical-validation"
+      ],
+      "sortOrder": 1,
+      "notes": [],
+      "assumptions": [],
+      "risks": [],
+      "validationRequirements": [],
+      "gapStrength": null,
+      "lastReviewed": "2026-11-25"
+    },
+    {
+      "id": "kente-gap-4",
+      "candidateId": "kente",
+      "stage": "literature_gaps",
+      "title": "A Kente-specific formal mapping from motif grammar to target loom operations still needs to be demonstrated",
+      "summary": "The potential contribution is the formal relationship between selected Asante Kente design structures, interlacement and a specified loom operation sequence.",
+      "detail": "The checked Ghanaian loom studies demonstrate digital draft/operation plans and physical validation on modified indigenous looms. They do not, in the checked abstracts, establish a machine-readable grammar for selected Asante Kente motifs that maps to validated operations on the traditional Bonwire narrow-strip loom. This is a bounded hypothesis, not a claim that no such work exists. Full-text analysis of Kente structural documentation, the two Vigbedor studies and other textile-generation systems is required before asserting novelty.",
+      "parentId": "kente-area-4",
+      "childIds": [
+        "kente-topic-4"
+      ],
+      "evidenceStatus": "hypothesis",
+      "evidenceLinkIds": [
+        "ev-kente-gap-new-vigbedor-2024",
+        "ev-kente-gap-new-vigbedor-2026"
+      ],
+      "relatedNodeIds": [],
+      "tags": [
+        "unconfirmed-gap",
+        "formal-grammar",
+        "loom-operation"
+      ],
+      "sortOrder": 2,
+      "notes": [],
+      "assumptions": [],
+      "risks": [],
+      "validationRequirements": [],
+      "gapStrength": "unconfirmed",
+      "lastReviewed": "2026-11-25"
+    },
+    {
+      "id": "kente-topic-4",
+      "candidateId": "kente",
+      "stage": "potential_topics",
+      "title": "Build a formal design–weave–operation representation for a bounded set of Asante Kente structures",
+      "summary": "Represent selected motifs, weave structure and target-loom operation sequence in one constraint-checkable model.",
+      "detail": "A suitable topic would define a small Kente pattern class and one loom context, encode the design and interlacement relationships, and represent the required operation sequence. Generation should be constrained by this representation, with machine-checkable validation and expert/physical validation where feasible. The study should not expand to every Kente tradition or every indigenous loom.",
+      "parentId": "kente-gap-4",
+      "childIds": [
+        "kente-rq-4-0",
+        "kente-rq-4-1"
+      ],
+      "evidenceStatus": "hypothesis",
+      "evidenceLinkIds": [],
+      "relatedNodeIds": [],
+      "tags": [
+        "candidate-topic"
+      ],
+      "sortOrder": 0,
+      "notes": [],
+      "assumptions": [],
+      "risks": [],
+      "validationRequirements": [],
+      "gapStrength": null,
+      "lastReviewed": "2026-11-25"
+    },
+    {
+      "id": "kente-rq-4-0",
+      "candidateId": "kente",
+      "stage": "research_questions",
+      "title": "How can selected Asante Kente motifs, weave structures and loom operations be represented in a machine-readable grammar?",
+      "summary": "What representation preserves the relationships between motif arrangement, interlacement structure and the operation sequence for the specified loom?",
+      "detail": "The answer should define the model entities and relationships, identify which structural and operational constraints are machine-checkable, and state which knowledge must be supplied or validated by practitioners.",
+      "parentId": "kente-topic-4",
+      "childIds": [],
+      "evidenceStatus": "hypothesis",
+      "evidenceLinkIds": [],
+      "relatedNodeIds": [],
+      "tags": [
+        "primary-research-question"
+      ],
+      "sortOrder": 0,
+      "notes": [],
+      "assumptions": [],
+      "risks": [],
+      "validationRequirements": [
+        "Specify the target loom and bounded Kente structure class.",
+        "Represent the design, weave/interlacement and loom-operation layers separately but link them explicitly.",
+        "Validate encoded rules against source-checked drafts and knowledgeable practitioners."
+      ],
+      "gapStrength": null,
+      "lastReviewed": "2026-11-25"
+    },
+    {
+      "id": "kente-rq-4-1",
+      "candidateId": "kente",
+      "stage": "research_questions",
+      "title": "Can generated Kente patterns be translated into complete and physically valid loom instructions?",
+      "summary": "To what extent do generated outputs satisfy structural constraints and produce complete operation plans that can be checked by experts or physically woven on the specified loom?",
+      "detail": "The evaluation should distinguish machine-checkable constraint satisfaction from expert judgement and physical weaving outcomes. A sample woven on a modified countershaft loom must not be presented as proof of compatibility with a different traditional narrow-strip loom.",
+      "parentId": "kente-topic-4",
+      "childIds": [],
+      "evidenceStatus": "hypothesis",
+      "evidenceLinkIds": [],
+      "relatedNodeIds": [],
+      "tags": [
+        "supporting-research-question"
+      ],
+      "sortOrder": 1,
+      "notes": [],
+      "assumptions": [],
+      "risks": [],
+      "validationRequirements": [
+        "Report structural validity and constraint satisfaction separately from visual similarity.",
+        "Check draft, heddling, lifting/treadling and tie-up completeness as applicable to the chosen loom.",
+        "Obtain practitioner assessment and, if feasible, physical weaving on the actual target loom."
+      ],
+      "gapStrength": null,
+      "lastReviewed": "2026-11-25"
     }
   ],
   "evidenceLinks": [
@@ -955,6 +1151,58 @@
       "pageOrSection": null,
       "notes": "Bibliographic record and the paper's actual findings still need to be checked.",
       "confidence": "low"
+    },
+    {
+      "id": "ev-kente-new-vigbedor-2024",
+      "nodeId": "kente-status-4",
+      "publicationId": "pub-vigbedor-2024",
+      "relationship": "methodological_precedent",
+      "claim": "The article reports WeavePoint 7.2 use to create weave, draft, lifting/stepping order and tie-up, followed by test weaving on a modified indigenous two-heddle loom.",
+      "limitation": "This is a modified two-heddle/countershaft setup and not a direct specification for traditional Bonwire narrow-strip operation or a Kente-specific grammar.",
+      "evidenceStrength": "direct",
+      "verificationStatus": "verified_abstract",
+      "pageOrSection": null,
+      "notes": "",
+      "confidence": "medium"
+    },
+    {
+      "id": "ev-kente-new-vigbedor-2026",
+      "nodeId": "kente-status-5",
+      "publicationId": "pub-vigbedor-2026",
+      "relationship": "methodological_precedent",
+      "claim": "The article reports a modified indigenous four-post countershaft handloom with four-to-six shaft configurations, physical fabric testing and artisan evaluation involving master weavers from Bonwire and Agortime-Kpetoe.",
+      "limitation": "The modified multi-shaft setup is not automatically equivalent to a traditional Bonwire narrow-strip loom; the study does not establish a Kente-specific computational representation.",
+      "evidenceStrength": "direct",
+      "verificationStatus": "verified_abstract",
+      "pageOrSection": null,
+      "notes": "",
+      "confidence": "medium"
+    },
+    {
+      "id": "ev-kente-gap-new-vigbedor-2024",
+      "nodeId": "kente-gap-4",
+      "publicationId": "pub-vigbedor-2024",
+      "relationship": "supports_context",
+      "claim": "This study demonstrates that digital weave/draft/lifting/tie-up plans and physical test weaving have already been used in Ghanaian indigenous loom research.",
+      "limitation": "It concerns loom modification and test weaving, not the proposed Kente-specific grammar; it therefore narrows the novelty claim rather than proving the proposed gap.",
+      "evidenceStrength": "contextual",
+      "verificationStatus": "verified_abstract",
+      "pageOrSection": null,
+      "notes": "",
+      "confidence": "medium"
+    },
+    {
+      "id": "ev-kente-gap-new-vigbedor-2026",
+      "nodeId": "kente-gap-4",
+      "publicationId": "pub-vigbedor-2026",
+      "relationship": "supports_context",
+      "claim": "This study demonstrates physical fabric production and practitioner evaluation on a modified indigenous handloom involving Bonwire and Agortime-Kpetoe master weavers.",
+      "limitation": "Its modified four-to-six-shaft countershaft setup is not evidence of traditional narrow-strip loom compatibility or a machine-readable Kente grammar.",
+      "evidenceStrength": "contextual",
+      "verificationStatus": "verified_abstract",
+      "pageOrSection": null,
+      "notes": "",
+      "confidence": "medium"
     }
   ],
   "crossLinks": [

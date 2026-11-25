@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "catalogueTitle": "MPhil IT Thesis Topic Explorer",
-  "lastReviewed": "2026-11-20",
+  "lastReviewed": "2026-11-25",
   "candidates": [
     "assets/data/candidates/kente_generation.json",
     "assets/data/candidates/crop_disease_reliability.json",

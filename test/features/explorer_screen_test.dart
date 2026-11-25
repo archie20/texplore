@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:thesis_topics/app/app.dart';
+import 'package:thesis_topics/data/catalogue_repository.dart';
+import 'package:thesis_topics/data/local_json_data_source.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -11,15 +15,43 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
     addTearDown(tester.view.resetPhysicalSize);
 
-    await tester.pumpWidget(const ThesisApp());
+    // Preload catalogue files so FakeAsync can finish CatalogueCubit.load().
+    final cache = <String, String>{};
+    await tester.runAsync(() async {
+      final manifest = await File('assets/data/manifest.json').readAsString();
+      cache['assets/data/manifest.json'] = manifest;
+      final decoded = await File('assets/data/manifest.json').readAsString();
+      // Collect listed paths from a lightweight parse.
+      for (final match in RegExp(
+        r'"assets/data/[^"]+\.json"',
+      ).allMatches(decoded)) {
+        final path = match.group(0)!.replaceAll('"', '');
+        cache[path] = await File(path).readAsString();
+      }
+    });
+
+    await tester.pumpWidget(
+      ThesisApp(
+        repository: CatalogueRepository(
+          source: LocalJsonDataSource(
+            read: (path) async {
+              final body = cache[path];
+              if (body == null) {
+                throw StateError('Catalogue fixture missing $path');
+              }
+              return body;
+            },
+          ),
+        ),
+      ),
+    );
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 50));
+    expect(find.text('Loading catalogue'), findsNothing);
 
     expect(find.textContaining('Kente'), findsWidgets);
     expect(
-      find.text(
-        'Plausible textile images are not necessarily weavable structures',
-      ),
+      find.textContaining('Visual Kente-like patterns'),
       findsOneWidget,
     );
     expect(find.text('Thesis topics'), findsOneWidget);
@@ -59,7 +91,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
     expect(find.text('More'), findsOneWidget);
     expect(
-      find.textContaining('A generated textile image can look convincing'),
+      find.textContaining('convincing pattern image'),
       findsOneWidget,
     );
     expect(find.text('Thesis problem · Hypothesis'), findsOneWidget);

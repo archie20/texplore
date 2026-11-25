@@ -18,14 +18,18 @@ import 'router.dart';
 import 'theme/app_theme.dart';
 
 class ThesisApp extends StatefulWidget {
-  const ThesisApp({super.key});
+  const ThesisApp({super.key, this.repository});
+
+  /// Optional override used by widget tests to avoid FakeAsync asset hangs.
+  final CatalogueRepository? repository;
 
   @override
   State<ThesisApp> createState() => _ThesisAppState();
 }
 
 class _ThesisAppState extends State<ThesisApp> {
-  late final CatalogueRepository _repository = CatalogueRepository();
+  late final CatalogueRepository _repository =
+      widget.repository ?? CatalogueRepository();
   late final GoRouter _router = buildRouter();
 
   @override

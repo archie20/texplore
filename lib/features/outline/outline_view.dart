@@ -3,16 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forui/forui.dart';
 
 import '../../app/theme/app_theme.dart';
-import '../../app/theme/stage_style.dart';
 import '../../domain/models/catalogue.dart';
-import '../../domain/services/stage_group.dart';
-import '../../graph/layout/layout_node.dart';
+import '../../domain/models/research_node.dart';
+import '../../domain/services/graph_queries.dart';
 import '../explorer/application/catalogue_cubit.dart';
 import '../explorer/application/explorer_bloc.dart';
 import '../explorer/application/explorer_event.dart';
 import '../explorer/application/explorer_state.dart';
+import 'outline_tree.dart';
 
-/// The same nodes the canvas is showing, in reading order, for keyboard use.
+/// Accessible tree of the actual research hierarchy for each candidate.
 class OutlineView extends StatelessWidget {
   const OutlineView({super.key});
 
@@ -20,14 +20,18 @@ class OutlineView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ExplorerBloc, ExplorerState>(
       buildWhen: (previous, next) =>
-          previous.layout != next.layout ||
           previous.selectedNodeId != next.selectedNodeId ||
           previous.expandedIds != next.expandedIds ||
+          previous.filters != next.filters ||
           previous.dimmedIds != next.dimmedIds,
       builder: (context, state) {
         final catalogue = context.read<CatalogueCubit>().state;
         if (catalogue is! CatalogueLoaded) return const SizedBox.shrink();
-        final nodes = state.layout.nodes;
+        final rows = OutlineTree.build(
+          catalogue: catalogue.catalogue,
+          expandedIds: state.expandedIds,
+          filters: state.filters,
+        );
         return DecoratedBox(
           decoration: BoxDecoration(
             color: context.theme.colors.card,
@@ -35,7 +39,7 @@ class OutlineView extends StatelessWidget {
               right: BorderSide(color: context.theme.colors.border),
             ),
           ),
-          child: nodes.isEmpty
+          child: rows.isEmpty
               ? Padding(
                   padding: const EdgeInsets.all(16),
                   child: Text(
@@ -46,13 +50,15 @@ class OutlineView extends StatelessWidget {
               : ListView(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   children: [
-                    for (final node in nodes)
+                    for (final row in rows)
                       _OutlineRow(
-                        node: node,
+                        node: row.node,
+                        depth: row.depth,
                         catalogue: catalogue.catalogue,
-                        selected: state.selectedNodeId == node.id,
-                        expanded: state.expandedIds.contains(node.id),
-                        dimmed: state.dimmedIds.contains(node.id),
+                        selected: state.selectedNodeId == row.node.id,
+                        expanded: state.expandedIds.contains(row.node.id),
+                        dimmed: row.contextOnly ||
+                            state.dimmedIds.contains(row.node.id),
                       ),
                   ],
                 ),
@@ -65,13 +71,15 @@ class OutlineView extends StatelessWidget {
 class _OutlineRow extends StatelessWidget {
   const _OutlineRow({
     required this.node,
+    required this.depth,
     required this.catalogue,
     required this.selected,
     required this.expanded,
     required this.dimmed,
   });
 
-  final LayoutNode node;
+  final ResearchNode node;
+  final int depth;
   final Catalogue catalogue;
   final bool selected;
   final bool expanded;
@@ -79,22 +87,21 @@ class _OutlineRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final research = catalogue.nodes[node.id];
-    final group = StageGroup.parse(node.id);
-    final childCount = node.childCount;
-    final title = group != null
-        ? StageStyle.of(node.stage).label
-        : (research?.title ?? node.title);
+    final childCount = GraphQueries.children(catalogue, node).length;
+    final title = node.title;
     final colors = context.theme.colors;
+    final indent = 8.0 + OutlineTree.cappedDepth(depth) * 12;
     return Opacity(
       opacity: dimmed ? 0.4 : 1,
       child: Padding(
-        padding: EdgeInsets.only(left: 8.0 + (node.stage.order - 1) * 10),
+        padding: EdgeInsets.only(left: indent),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (childCount > 0)
               Semantics(
                 button: true,
+                expanded: expanded,
                 label: '${expanded ? 'Collapse' : 'Expand'} $title',
                 child: GestureDetector(
                   onTap: () =>
@@ -114,7 +121,7 @@ class _OutlineRow extends StatelessWidget {
               child: Semantics(
                 button: true,
                 selected: selected,
-                label: group == null ? '${node.stage.label}. $title' : title,
+                label: '${node.stage.label}. $title',
                 child: GestureDetector(
                   onTap: () => context.read<ExplorerBloc>().add(
                     NodeSelected(node.id, centre: true),
@@ -134,18 +141,15 @@ class _OutlineRow extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (group == null)
-                            Text(
-                              node.stage.label,
-                              style: context.theme.typography.body.xs.copyWith(
-                                color: colors.mutedForeground,
-                                fontSize: 10,
-                              ),
+                          Text(
+                            node.stage.label,
+                            style: context.theme.typography.body.xs.copyWith(
+                              color: colors.mutedForeground,
+                              fontSize: 10,
                             ),
+                          ),
                           Text(
                             title,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
                             style: context.theme.typography.body.sm.copyWith(
                               fontWeight: selected
                                   ? FontWeight.w600

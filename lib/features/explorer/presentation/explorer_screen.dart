@@ -783,13 +783,13 @@ class _CanvasStack extends StatelessWidget {
 Set<String> _directChildIds(GraphLayout layout, String id) {
   return {
     for (final edge in layout.edges)
-      if (!edge.crossLink && edge.sourceId == id) edge.targetId,
+      if (edge.structural && edge.sourceId == id) edge.targetId,
   };
 }
 
 String? _parentIdOf(GraphLayout layout, String id) {
   for (final edge in layout.edges) {
-    if (!edge.crossLink && edge.targetId == id) return edge.sourceId;
+    if (edge.structural && edge.targetId == id) return edge.sourceId;
   }
   return null;
 }

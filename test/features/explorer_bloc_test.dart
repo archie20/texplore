@@ -156,7 +156,7 @@ void main() {
   );
 
   blocTest<ExplorerBloc, ExplorerState>(
-    'revealing a path expands every ancestor',
+    'revealing a path opens the stage and auto-reveals ancestors',
     build: () => ExplorerBloc(catalogue: catalogue),
     act: (bloc) => bloc.add(const PathRevealed('n-rq')),
     verify: (bloc) {
@@ -167,8 +167,35 @@ void main() {
           StageGroup.idFor('candidate-a', ResearchStage.researchQuestions),
         ]),
       );
+      expect(bloc.state.expandedIds.contains('n-gap'), isFalse);
       expect(bloc.state.layout.nodeById('n-rq'), isNotNull);
-      expect(bloc.state.layout.nodeById('n-gap'), isNull);
+      expect(bloc.state.layout.nodeById('n-gap'), isNotNull);
+      expect(bloc.state.layout.nodeById('n-relevance'), isNull);
+    },
+  );
+
+  blocTest<ExplorerBloc, ExplorerState>(
+    'expanding a record reveals its actual children',
+    build: () => ExplorerBloc(
+      catalogue: catalogue,
+      initialExpanded: {
+        'n-problem',
+        StageGroup.idFor('candidate-a', ResearchStage.literatureGaps),
+      },
+    ),
+    act: (bloc) => bloc.add(const NodeToggled('n-gap')),
+    verify: (bloc) {
+      expect(bloc.state.expandedIds, contains('n-gap'));
+      expect(bloc.state.layout.nodeById('n-topic'), isNotNull);
+      expect(
+        bloc.state.layout.edges.any(
+          (edge) =>
+              edge.structural &&
+              edge.sourceId == 'n-gap' &&
+              edge.targetId == 'n-topic',
+        ),
+        isTrue,
+      );
     },
   );
 

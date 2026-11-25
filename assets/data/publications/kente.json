@@ -283,6 +283,61 @@
       "verificationNotes": "Project discussions mention IKKente in relation to Ikat innovation. Exact identity and relationship to the cited Ikat co-design study are unverified.",
       "relevanceNote": "A related textile-innovation lead, not evidence of Kente loom-compatible generation.",
       "accessDate": null
+    },
+    {
+      "id": "pub-vigbedor-2024",
+      "title": "Integration of counter shaft shedding mechanism into indigenous two-heddle loom: A novel approach",
+      "authors": [
+        "Vigbedor, Divine",
+        "Akrofi, Moses",
+        "Bruce-Amartey Jnr., Eric",
+        "Howard, Ebenezer Kofi"
+      ],
+      "year": 2024,
+      "venue": "Fashion and Textiles Review",
+      "volume": "5",
+      "issue": "1",
+      "pages": "40-57",
+      "doi": "10.35738/ftr.v5.2024.03",
+      "url": "https://journal.itfpgh.com/ftr/article/view/76",
+      "abstract": "The study integrates a countershaft shedding mechanism into an indigenous two-heddle loom. It uses observation, interviews and studio experiments to compare conceptual designs. The paper reports use of WeavePoint 7.2 to prepare the weave, draft, lifting/stepping order and tie-up, followed by test weaving.",
+      "publicationType": "journal_article",
+      "datasetOrArtifact": "WeavePoint 7.2 drafts and physical test-weave samples",
+      "verificationStatus": "verified_abstract",
+      "verificationNotes": "Official journal article page and accessible article content checked. The issue is Vol. 5 No. 1 (2024); some index pages report differing online publication dates. DOI, journal, volume and pages verified. The article concerns a modified indigenous two-heddle loom, not a direct specification of the Bonwire narrow-strip loom.",
+      "relevanceNote": "Direct Ghanaian precedent for digital weave planning linked to loom operations and physical test weaving. It rules out claiming novelty merely for image-to-draft translation; it does not establish a Kente-specific computational grammar.",
+      "researchMethod": "Mixed methods: observation of weaving practice, interviews with local weavers and textile experts, studio design experiments, and test weaving.",
+      "keyFindings": "WeavePoint 7.2 used for weave, draft, lifting/stepping order and tie-up; a modified indigenous two-heddle loom with countershaft shedding was physically tested.",
+      "limitations": "The work is about loom modification and weaving efficiency, not a formal computational representation of Asante Kente motifs or traditional narrow-strip operation.",
+      "accessDate": "2026-11-25"
+    },
+    {
+      "id": "pub-vigbedor-2026",
+      "title": "Analysis of Woven Fabric Structure from Integrated Countershaft Shedding Mechanism on an Indigenous Handloom",
+      "authors": [
+        "Vigbedor, Divine",
+        "Akrofi, Moses",
+        "Nyante, Bennett",
+        "Asinyo, Benjamin Kwablah",
+        "Frimpong, Charles"
+      ],
+      "year": 2026,
+      "venue": "Fashion and Textiles Review",
+      "volume": "7",
+      "issue": null,
+      "pages": "67-83",
+      "doi": "10.35738/ftr.v7.2024.06",
+      "url": "https://journal.itfpgh.com/ftr/article/view/248",
+      "abstract": "The study evaluates a countershaft shedding mechanism integrated into an indigenous Ghanaian handloom. A modified indigenous four-post handloom was used to produce fabrics across four-to-six shaft configurations, including plain derivatives, twills, diamonds and satin structures. Mechanical fabric testing and qualitative artisan evaluation involved master weavers from Bonwire and Agortime-Kpetoe.",
+      "publicationType": "journal_article",
+      "datasetOrArtifact": "Physical woven fabric samples and artisan evaluation",
+      "verificationStatus": "verified_abstract",
+      "verificationNotes": "Official Fashion and Textiles Review article page and abstract checked; published 14 April 2026, Volume 7, pages 67–83. DOI verified. Data sharing is stated to be available upon reasonable request. The modified four-to-six-shaft countershaft setup must not be equated with the traditional Bonwire narrow-strip loom.",
+      "relevanceNote": "Provides a recent Ghanaian precedent for physical fabric production, structural/mechanical testing and artisan evaluation involving Bonwire weavers. It helps ground validation feasibility but does not itself provide a Kente-specific computational grammar or narrow-strip loom operation specification.",
+      "researchMethod": "Mixed methods: experimental fabric production, tensile testing, drape/structural assessment and qualitative surveys/expert evaluation with master weavers.",
+      "keyFindings": "Multi-shaft weave structures include plain derivatives, twills, diamonds and satin; the paper reports changes in fabric properties, pattern precision and weaver experience.",
+      "limitations": "The setup is a modified four-post countershaft handloom with four-to-six shafts. Its operations and findings cannot be transferred automatically to a traditional narrow-strip loom or assumed to represent all Asante Kente structures.",
+      "accessDate": "2026-11-25"
     }
   ]
 }

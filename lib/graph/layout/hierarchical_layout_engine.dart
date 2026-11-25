@@ -23,10 +23,9 @@ class HierarchicalLayoutEngine {
   static const originX = LatticeMetrics.originX;
   static const originY = LatticeMetrics.originY;
 
-  /// Thesis problems stay at the root. Their research stages sit at irregular
-  /// distances and gaps around that problem. An open stage's records use that
-  /// same irregular placement. They are not set on a ring or a fan. Opening a
-  /// stage does not move the other stages.
+  /// Thesis problems stay at the root. Stage hubs scatter around the problem
+  /// as navigation cues. Research records cluster near their stage hub, but
+  /// structural edges follow actual parentId/childIds.
   GraphLayout layout({
     required Catalogue catalogue,
     required Set<String> visibleIds,
@@ -57,6 +56,7 @@ class HierarchicalLayoutEngine {
           childCount: stages.length,
           expanded: expandedIds.contains(root.id),
           linkFrom: null,
+          navigationLink: false,
           drawn: true,
         ),
       ];
@@ -80,6 +80,7 @@ class HierarchicalLayoutEngine {
         byLocal[node.id] = node;
         placed.add(node);
       }
+      final seenEdges = <String>{};
       for (final seat in shifted) {
         if (!seat.drawn) continue;
         final from = seat.linkFrom;
@@ -87,7 +88,11 @@ class HierarchicalLayoutEngine {
         final source = byLocal[from];
         final target = byLocal[seat.id];
         if (source == null || target == null) continue;
-        edges.add(_router.hierarchy(source, target));
+        final edge = seat.navigationLink
+            ? _router.navigation(source, target)
+            : _router.hierarchy(source, target);
+        if (!seenEdges.add(edge.id)) continue;
+        edges.add(edge);
       }
       var bottom = top + LatticeMetrics.rootHeight;
       for (final node in byLocal.values) {
@@ -160,12 +165,13 @@ class HierarchicalLayoutEngine {
     final groups = <ScatterGroup>[];
     final membersOf = <ResearchStage, List<ResearchNode>>{};
     for (final stage in visible) {
-      final members = GraphQueries.nodesInStage(
+      // Reserve every stage member so opening/expanding does not jump hubs.
+      final reserved = GraphQueries.nodesInStage(
         catalogue,
         root.candidateId,
         stage,
       );
-      membersOf[stage] = members;
+      membersOf[stage] = reserved;
       groups.add(
         ScatterGroup(
           child: ScatterChild.of(
@@ -173,7 +179,7 @@ class HierarchicalLayoutEngine {
             stage,
           ),
           members: [
-            for (final member in members)
+            for (final member in reserved)
               ScatterChild.of(member.id, member.stage),
           ],
         ),
@@ -189,6 +195,11 @@ class HierarchicalLayoutEngine {
       final members = membersOf[stage]!;
       final groupId = StageGroup.idFor(root.candidateId, stage);
       final open = expandedIds.contains(groupId);
+      final entries = GraphQueries.stageEntries(
+        catalogue,
+        root.candidateId,
+        stage,
+      );
       seats.add(
         _Seat(
           id: groupId,
@@ -197,13 +208,18 @@ class HierarchicalLayoutEngine {
           title: stage.label,
           summary: '',
           center: centers[groupId]!,
-          childCount: members.length,
+          childCount: entries.length,
           expanded: open,
           linkFrom: root.id,
+          navigationLink: true,
           drawn: true,
         ),
       );
       for (final member in members) {
+        final kids = GraphQueries.children(catalogue, member);
+        final parentId = member.parentId;
+        final parentVisible =
+            parentId != null && visibleIds.contains(parentId);
         seats.add(
           _Seat(
             id: member.id,
@@ -212,10 +228,11 @@ class HierarchicalLayoutEngine {
             title: member.title,
             summary: member.summary,
             center: centers[member.id]!,
-            childCount: 0,
-            expanded: false,
-            linkFrom: groupId,
-            drawn: open && visibleIds.contains(member.id),
+            childCount: kids.length,
+            expanded: expandedIds.contains(member.id),
+            linkFrom: parentVisible ? parentId : null,
+            navigationLink: false,
+            drawn: visibleIds.contains(member.id),
           ),
         );
       }
@@ -298,6 +315,7 @@ class _Seat {
     required this.childCount,
     required this.expanded,
     required this.linkFrom,
+    required this.navigationLink,
     required this.drawn,
   });
 
@@ -310,6 +328,7 @@ class _Seat {
   final int childCount;
   final bool expanded;
   final String? linkFrom;
+  final bool navigationLink;
 
   /// Closed records stay in the list so the group does not jump when they
   /// are opened. They are not drawn.
@@ -326,6 +345,7 @@ class _Seat {
       childCount: childCount,
       expanded: expanded,
       linkFrom: linkFrom,
+      navigationLink: navigationLink,
       drawn: drawn,
     );
   }

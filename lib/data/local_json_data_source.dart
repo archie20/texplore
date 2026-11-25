@@ -36,6 +36,7 @@ class LocalJsonDataSource {
     );
     final issues = <ValidationIssue>[];
 
+    final publicationFiles = <ParsedPublicationFile>[];
     final publications = <Publication>[];
     for (final path in JsonReaders.stringList(
       manifest,
@@ -43,21 +44,17 @@ class LocalJsonDataSource {
       'manifest',
     )) {
       try {
-        final raw = await _read(path);
-        final json = JsonReaders.map(jsonDecode(raw), path);
-        final items = JsonReaders.list(
-          json['publications'],
-          '$path.publications',
-        );
-        for (var i = 0; i < items.length; i++) {
-          publications.add(
-            Publication.fromJson(
-              JsonReaders.map(items[i], '$path.publications[$i]'),
-              '$path.publications[$i]',
-            ),
-          );
-        }
+        final file = await _readPublicationFile(path);
+        publicationFiles.add(file);
+        publications.addAll(file.publications);
       } on FormatException catch (error) {
+        publicationFiles.add(
+          ParsedPublicationFile(
+            source: path,
+            schemaVersion: null,
+            publications: const [],
+          ),
+        );
         issues.add(
           ValidationIssue(
             severity: IssueSeverity.error,
@@ -66,6 +63,13 @@ class LocalJsonDataSource {
           ),
         );
       } catch (error) {
+        publicationFiles.add(
+          ParsedPublicationFile(
+            source: path,
+            schemaVersion: null,
+            publications: const [],
+          ),
+        );
         issues.add(
           ValidationIssue(
             severity: IssueSeverity.error,
@@ -113,13 +117,34 @@ class LocalJsonDataSource {
       lastReviewed: lastReviewed,
       candidates: candidates,
       publications: publications,
+      publicationFiles: publicationFiles,
       parseIssues: issues,
+    );
+  }
+
+  Future<ParsedPublicationFile> _readPublicationFile(String path) async {
+    final json = JsonReaders.map(jsonDecode(await _read(path)), path);
+    final schema = _readSchemaVersion(json, path);
+    final items = JsonReaders.list(json['publications'], '$path.publications');
+    final publications = <Publication>[];
+    for (var i = 0; i < items.length; i++) {
+      publications.add(
+        Publication.fromJson(
+          JsonReaders.map(items[i], '$path.publications[$i]'),
+          '$path.publications[$i]',
+        ),
+      );
+    }
+    return ParsedPublicationFile(
+      source: path,
+      schemaVersion: schema,
+      publications: publications,
     );
   }
 
   Future<ParsedCandidate> _readCandidate(String path) async {
     final json = JsonReaders.map(jsonDecode(await _read(path)), path);
-    final schema = JsonReaders.optionalString(json, 'schemaVersion', path);
+    final schema = _readSchemaVersion(json, path);
     final candidateJson = JsonReaders.map(json['candidate'], '$path.candidate');
     final candidate = Candidate.fromJson(candidateJson, '$path.candidate');
     final nodes = <ResearchNode>[];
@@ -170,10 +195,22 @@ class LocalJsonDataSource {
     );
   }
 
+  /// Reads schemaVersion without substituting a default. Null means missing.
+  String? _readSchemaVersion(Map<String, Object?> json, String path) {
+    if (!json.containsKey('schemaVersion') || json['schemaVersion'] == null) {
+      return null;
+    }
+    final value = json['schemaVersion'];
+    if (value is! String) {
+      throw FormatException('Expected a string at $path.schemaVersion.');
+    }
+    return value;
+  }
+
   ParsedCandidate _unreadable(String path, String message) {
     final id = _idFromPath(path);
     return ParsedCandidate(
-      schemaVersion: Catalogue.supportedSchemaVersion,
+      schemaVersion: null,
       source: path,
       candidate: Candidate(
         id: id,

@@ -563,6 +563,7 @@ class LatticeMotion extends ChangeNotifier {
       end: end,
       dashed: edge.dashed,
       crossLink: edge.crossLink,
+      navigation: edge.navigation,
     );
   }
 

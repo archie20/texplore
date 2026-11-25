@@ -202,15 +202,13 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     return expanded;
   }
 
-  /// Opens the problem and the stage that contains this record.
+  /// Opens the on-path ancestors and stage hub so [node] is reachable.
   Set<String> _expandedForRecord(ResearchNode node) {
     final active = _openCandidateId();
     final expanded = active != null && active != node.candidateId
         ? <String>{}
         : {...state.expandedIds};
-    final root = _catalogue.candidateById(node.candidateId)?.rootNodeId;
-    if (root != null) expanded.add(root);
-    expanded.add(StageGroup.idFor(node.candidateId, node.stage));
+    expanded.addAll(GraphQueries.expansionForPath(_catalogue, node.id));
     return expanded;
   }
 
@@ -252,7 +250,16 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
       return;
     }
     final node = _catalogue.nodes[event.nodeId];
-    if (node == null || node.stage != ResearchStage.thesisProblem) return;
+    if (node == null) return;
+    if (node.stage == ResearchStage.thesisProblem) {
+      _toggleProblem(node, emit);
+      return;
+    }
+    if (GraphQueries.children(_catalogue, node).isEmpty) return;
+    _toggleRecord(node, emit);
+  }
+
+  void _toggleProblem(ResearchNode node, Emitter<ExplorerState> emit) {
     final opening = !state.expandedIds.contains(node.id);
     final expanded = {...state.expandedIds};
     String? selected = state.selectedNodeId;
@@ -281,6 +288,39 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     );
   }
 
+  void _toggleRecord(ResearchNode node, Emitter<ExplorerState> emit) {
+    final opening = !state.expandedIds.contains(node.id);
+    final expanded = {...state.expandedIds};
+    String? selected = state.selectedNodeId;
+    if (opening) {
+      final active = _openCandidateId();
+      if (active != null && active != node.candidateId) expanded.clear();
+      expanded.addAll(GraphQueries.expansionForPath(_catalogue, node.id));
+      expanded.add(node.id);
+      selected = node.id;
+    } else {
+      expanded.remove(node.id);
+      final descendants = GraphQueries.descendantIds(_catalogue, node.id);
+      expanded.removeWhere(descendants.contains);
+      if (selected != null &&
+          (selected == node.id || descendants.contains(selected))) {
+        selected = node.id;
+      }
+    }
+    final view = _view(expanded, state.filters);
+    emit(
+      state.copyWith(
+        expandedIds: expanded,
+        selectedNodeId: selected,
+        selectedCandidateId: node.candidateId,
+        layout: view.layout,
+        dimmedIds: view.dimmed,
+        focusTick: state.focusTick + 1,
+        focusKind: opening ? FocusKind.centreNode : FocusKind.zoomOut,
+      ),
+    );
+  }
+
   void _toggleStage(StageGroup group, Emitter<ExplorerState> emit) {
     final candidate = _catalogue.candidateById(group.candidateId);
     if (candidate == null) return;
@@ -296,9 +336,22 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
       selected = group.id;
     } else {
       expanded.remove(group.id);
+      final entries = GraphQueries.stageEntries(
+        _catalogue,
+        group.candidateId,
+        group.stage,
+      );
+      final hide = <String>{};
+      for (final entry in entries) {
+        hide.add(entry.id);
+        hide.addAll(GraphQueries.descendantIds(_catalogue, entry.id));
+      }
+      expanded.removeWhere(hide.contains);
       if (selected != null) {
         final node = _catalogue.nodes[selected];
-        if (node != null &&
+        if (node != null && hide.contains(node.id)) {
+          selected = group.id;
+        } else if (node != null &&
             node.candidateId == group.candidateId &&
             node.stage == group.stage) {
           selected = group.id;
@@ -322,12 +375,10 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
   void _onPath(PathRevealed event, Emitter<ExplorerState> emit) {
     final node = _catalogue.nodes[event.nodeId];
     if (node == null) return;
-    final expanded = {...state.expandedIds};
-    final root = _catalogue.candidateById(node.candidateId)?.rootNodeId;
-    if (root != null) expanded.add(root);
-    if (node.stage != ResearchStage.thesisProblem) {
-      expanded.add(StageGroup.idFor(node.candidateId, node.stage));
-    }
+    final expanded = {
+      ...state.expandedIds,
+      ...GraphQueries.expansionForPath(_catalogue, node.id),
+    };
     final view = _view(expanded, state.filters);
     emit(
       state.copyWith(
@@ -429,8 +480,15 @@ class _View extends Equatable {
           if (node.stage != ResearchStage.thesisProblem) {
             keep.add(StageGroup.idFor(node.candidateId, node.stage));
           }
+          keep.addAll(GraphQueries.ancestorIds(catalogue, id));
         }
         visible = keep.where(structural.contains).toSet();
+        for (final id in visible) {
+          final node = catalogue.nodes[id];
+          if (node != null && !matching.contains(id)) {
+            dimmed.add(id);
+          }
+        }
       } else {
         dimmed.addAll(
           structural.where((id) {
